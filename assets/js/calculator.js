@@ -39,10 +39,10 @@ jQuery(document).ready(($) => {
     // Update de labels op basis van de rekenmodus
     const updateLabel = () => {
       $inputs.labelEgalineMm.text(
-        calculationMode === 'kg_per_mm' ? "Hoe dik egaliseren in mm?" : "Aantal lagen in mm"
+        calculationMode === 'kg_per_mm' ? __("Hoe dik egaliseren in mm?", 'text-domain') : __("Aantal lagen in mm", 'text-domain')
       );
-      $inputs.labelEgalineM2.text("Aantal m² egaliseren?");
-      $inputs.labelResultBags.text(`Aantal zakken (${BAG_WEIGHT}kg)`); // Veranderd de label naar het gewicht per zak
+      $inputs.labelEgalineM2.text(__("Aantal m² egaliseren?", 'text-domain'));
+      $inputs.labelResultBags.text(__('Aantal zakken', 'text-domain') + ` (${BAG_WEIGHT}kg)`); // Veranderd de label naar het gewicht per zak
     };
 
     // Zet standaardwaarden in de invoervelden
@@ -125,7 +125,7 @@ jQuery(document).ready(($) => {
       });
 
       if (!isValid) {
-        alert("Vul alle velden in voordat je verder gaat!"); // Laat een waarschuwing zien als velden leeg zijn
+        alert(__("Vul alle velden in voordat je verder gaat!", 'text-domain')); // Laat een waarschuwing zien als velden leeg zijn
       }
       return isValid;
     };
@@ -217,7 +217,7 @@ jQuery(document).ready(($) => {
         $calculator.find('.result-bags').css('border', '1px solid red');
       }
 
-      alert("Vul alle vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen.");
+      alert(__("Vul alle vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen.", 'text-domain'));
       isValid = false;
     } else {
       // Reset de randkleur als de velden geldig zijn

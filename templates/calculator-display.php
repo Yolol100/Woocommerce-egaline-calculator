@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
          data-variation-id="<?php echo esc_attr( $variation_id ); ?>">
 
         <h3>
-            Bereken het aantal zakken
+            <?php esc_html_e( 'Bereken het aantal zakken', 'egaline' ); ?>
         </h3>
 
         <!-- Verborgen veld voor de variation ID -->
@@ -22,37 +22,37 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="inputs-container">
             <div class="form-group">
                 <label class="egaline-mm-label" for="egaline-mm">
-                    <?php echo esc_html( $calculation_mode === 'kg_per_mm' ? 'Hoe dik egaliseren in mm?' : 'Aantal lagen in mm' ); ?>
+                    <?php echo esc_html( $calculation_mode === 'kg_per_mm' ? __( 'Hoe dik egaliseren in mm?', 'egaline' ) : __( 'Aantal lagen in mm', 'egaline' ) ); ?>
                 </label>
                 <div class="input-wrapper">
-                    <button type="button" class="qty-btn minus" aria-label="Verminder aantal millimeter">−</button>
+                    <button type="button" class="qty-btn minus" aria-label="<?php esc_attr_e( 'Verminder aantal millimeter', 'egaline' ); ?>">−</button>
                     <input type="number" id="egaline-mm" name="egaline_mm" value="0" min="0" step="1" class="egaline-mm egaline-input" aria-describedby="egaline-mm-help">
-                    <button type="button" class="qty-btn plus" aria-label="Verhoog aantal millimeter">+</button>
+                    <button type="button" class="qty-btn plus" aria-label="<?php esc_attr_e( 'Verhoog aantal millimeter', 'egaline' ); ?>">+</button>
                 </div>
             </div>
             <div class="form-group">
                 <label class="egaline-m2-label" for="egaline-m2"><?php esc_html_e( 'Aantal m² egaliseren?', 'egaline' ); ?></label>
                 <div class="input-wrapper">
-                    <button type="button" class="qty-btn minus" aria-label="Verminder aantal m²">−</button>
+                    <button type="button" class="qty-btn minus" aria-label="<?php esc_attr_e( 'Verminder aantal m²', 'egaline' ); ?>">−</button>
                     <input type="number" id="egaline-m2" name="egaline_m2" value="0" min="0" step="1" class="egaline-m2 egaline-input" aria-describedby="egaline-m2-help">
-                    <button type="button" class="qty-btn plus" aria-label="Verhoog aantal m²">+</button>
+                    <button type="button" class="qty-btn plus" aria-label="<?php esc_attr_e( 'Verhoog aantal m²', 'egaline' ); ?>">+</button>
                 </div>
             </div>
         </div>
 
         <div class="result">
-            <h3>Uw resultaat</h3>
+            <h3><?php esc_html_e( 'Uw resultaat', 'egaline' ); ?></h3>
             <div class="result-container">
                 <div class="result-section benodigde-hoeveelheid">
-                    <h4>Benodigde hoeveelheid</h4>
+                    <h4><?php esc_html_e( 'Benodigde hoeveelheid', 'egaline' ); ?></h4>
                     <p><span class="result-kg">0.00</span> kg Egaline</p>
                 </div>
                 <div class="result-section aantal-zakken">
-                    <h4 class="result-bags-label">Aantal zakken (<?php echo esc_html( $kg_per_bag ); ?>kg)</h4>
+                    <h4 class="result-bags-label"><?php echo esc_html( sprintf( __( 'Aantal zakken (%dkg)', 'egaline' ), $kg_per_bag ) ); ?></h4>
                     <div class="input-wrapper">
-                        <button type="button" class="qty-btn minus zakken-minus" aria-label="Verlaag aantal zakken">−</button>
+                        <button type="button" class="qty-btn minus zakken-minus" aria-label="<?php esc_attr_e( 'Verlaag aantal zakken', 'egaline' ); ?>">−</button>
                         <input type="number" name="result_bags" value="0" min="0" step="1" class="result-bags egaline-input" aria-describedby="result-bags-help">
-                        <button type="button" class="qty-btn plus zakken-plus" aria-label="Verhoog aantal zakken">+</button>
+                        <button type="button" class="qty-btn plus zakken-plus" aria-label="<?php esc_attr_e( 'Verhoog aantal zakken', 'egaline' ); ?>">+</button>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
         <div class="total-price">
             <div class="total-price-row">
-                <h4>Totaalprijs:</h4>
+                <h4><?php esc_html_e( 'Totaalprijs:', 'egaline' ); ?></h4>
                 <span class="total-price-value"><?php echo number_format( 0.00, 2, ',', '' ); ?></span>
             </div>
             <div class="total-price-note">

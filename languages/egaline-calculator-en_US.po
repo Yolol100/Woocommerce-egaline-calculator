@@ -1,0 +1,130 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Egaline Calculator.\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-21 13:51+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.7.1; wp-6.7.2\n"
+"X-Domain: egaline-calculator"
+
+#. Author URI of the plugin
+msgid "https://example.com."
+msgstr "https://example.com."
+
+#. URI of the plugin
+msgid "https://example.com/egaline-calculator."
+msgstr "https://example.com/egaline-calculator."
+
+#. Description of the plugin
+msgid ""
+"Voegt een professionele egalinecalculator toe aan WooCommerce-producten."
+msgstr "Adds a professional self-leveling calculator to WooCommerce products."
+
+#. Author of the plugin
+msgid "Webactueel"
+msgstr "Webactueel"
+
+#. Name of the plugin
+msgid "WooCommerce Egaline Calculator."
+msgstr "WooCommerce Egaline Calculator."
+
+# Translations added for strings found in the PHP files:
+
+msgid "Bereken het aantal zakken"
+msgstr "Calculate the number of bags"
+
+msgid "Hoe dik egaliseren in mm?"
+msgstr "How thick is the leveling in mm?"
+
+msgid "Aantal lagen in mm"
+msgstr "Number of layers in mm"
+
+msgid "Aantal m² egaliseren?"
+msgstr "Area to level in m²?"
+
+msgid "Uw resultaat"
+msgstr "Your result"
+
+msgid "Benodigde hoeveelheid"
+msgstr "Required amount"
+
+msgid "Aantal zakken"
+msgstr "Number of bags"
+
+msgid "Totaalprijs:"
+msgstr "Total price:"
+
+msgid "Inclusief BTW"
+msgstr "Including VAT"
+
+msgid "Activeer Egaline Calculator"
+msgstr "Activate Egaline Calculator"
+
+msgid "Rekenmethode"
+msgstr "Calculation method"
+
+msgid "Kg per mm"
+msgstr "Kg per mm"
+
+msgid "Lagen per mm"
+msgstr "Layers per mm"
+
+msgid "Kg per zak"
+msgstr "Kg per bag"
+
+msgid "Kg per m²"
+msgstr "Kg per m²"
+
+msgid "Vul alle velden in voordat je verder gaat!"
+msgstr "Fill in all fields before proceeding!"
+
+msgid "Vul alle vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen."
+msgstr "Fill in all the required information in the calculator before adding the product to the cart."
+
+msgid "Calculator kan niet worden weergegeven vanwege ontbrekende productinstellingen."
+msgstr "Calculator cannot be displayed due to missing product settings."
+
+msgid "Calculator-templatebestand niet gevonden."
+msgstr "Calculator template file not found."
+
+msgid "Verminder aantal millimeter"
+msgstr "Decrease number of millimeters"
+
+msgid "Verhoog aantal millimeter"
+msgstr "Increase number of millimeters"
+
+msgid "Verminder aantal m²"
+msgstr "Decrease number of m²"
+
+msgid "Verhoog aantal m²"
+msgstr "Increase number of m²"
+
+msgid "Verlaag aantal zakken"
+msgstr "Decrease number of bags"
+
+msgid "Verhoog aantal zakken"
+msgstr "Increase number of bags"
+
+msgid "Vul alle velden in"
+msgstr "Fill in all fields"
+
+msgid "Totaalprijs"
+msgstr "Total price"
+
+msgid "€ %.2f"
+msgstr "€ %.2f"
+
+msgid "Verlaag aantal zakken"
+msgstr "Decrease number of bags"
+
+msgid "Verhoog aantal zakken"
+msgstr "Increase number of bags"

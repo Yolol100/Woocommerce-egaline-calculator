@@ -251,7 +251,7 @@ class Egaline_Calculator_Cart {
                 $item->add_meta_data(__('Aantal zakken', 'egaline'), sprintf('%d (%d kg per zak)', $calculator_data['bags'], $calculator_data['kg_per_bag']));
             }
             if (isset($calculator_data['total_price'])) {
-                $item->add_meta_data(__('Totaalprijs', 'egaline'), sprintf('€ %.2f', $calculator_data['total_price']));
+                $item->add_meta_data(__('Totaalprijs', 'egaline'), sprintf(__('€ %.2f', 'egaline'), $calculator_data['total_price']));
             }
         }
     }

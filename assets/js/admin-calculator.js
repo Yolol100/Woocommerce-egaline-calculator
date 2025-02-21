@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (modeSelect && labelKgPerMm) {
         modeSelect.addEventListener("change", (event) => {
             labelKgPerMm.textContent = (event.target.value === "kg_per_mm") 
-                ? "Kg per mm" 
-                : "Lagen per mm";
+                ? __("Kg per mm", 'text-domain') 
+                : __("Lagen per mm", 'text-domain');
         });
     }
 });
