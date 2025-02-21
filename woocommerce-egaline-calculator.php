@@ -6,8 +6,8 @@
  * Version: 1.0.0.
  * Author: Webactueel
  * Author URI: https://example.com.
- * Text Domain: egaline-calculator
- * Domain Path: /languages
+ * Text Domain: egaline-calculator.
+ * Domain Path: /languages.
  * Requires PHP: 8.0.
  * Requires at least: 6.0.
  * WC requires at least: 6.0.
@@ -60,7 +60,7 @@ final class Egaline_Calculator_Init {
             if ( is_readable( $file_path ) ) {
                 require_once $file_path;
             } else {
-                $this->log_error( sprintf( __( 'Bestand niet gevonden of niet leesbaar: %s.', self::TEXT_DOMAIN ), $file_path ) );
+                $this->log_error( "Bestand niet gevonden of niet leesbaar: {$file_path}." );
             }
         }
     }
@@ -71,24 +71,8 @@ final class Egaline_Calculator_Init {
      * @return void
      */
     private function register_hooks(): void {
-        // Laadt de vertalingen zodra de plugin is geladen
-        add_action( 'plugins_loaded', [ $this, 'load_plugin_textdomain' ] );  // Verplaats de vertaling naar deze actie
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
         add_action( 'plugins_loaded', [ $this, 'check_dependencies' ] );
-    }
-
-    /**
-     * Laadt de vertalingen van de plugin.
-     *
-     * @return void
-     */
-    public function load_plugin_textdomain(): void {
-        // Laad vertalingen uit de 'languages' map van de plugin
-        load_plugin_textdomain(
-            self::TEXT_DOMAIN, // Text Domain
-            false,             // Gebruik standaard pad
-            plugin_dir_path( __FILE__ ) . 'languages' // Pad naar de taalbestanden in de pluginmap
-        );
     }
 
     /**
@@ -118,7 +102,7 @@ final class Egaline_Calculator_Init {
         $file_url  = $this->plugin_url . $relative_path;
 
         if ( ! file_exists( $file_path ) ) {
-            $this->log_error( sprintf( __( 'JS bestand ontbreekt: %s.', self::TEXT_DOMAIN ), $file_path ) );
+            $this->log_error( "JS bestand ontbreekt: {$file_path}." );
             return;
         }
 
@@ -142,14 +126,14 @@ final class Egaline_Calculator_Init {
         $file_url  = $this->plugin_url . $relative_path;
 
         if ( ! file_exists( $file_path ) ) {
-            $this->log_error( sprintf( __( 'CSS bestand ontbreekt: %s.', self::TEXT_DOMAIN ), $file_path ) );
+            $this->log_error( "CSS bestand ontbreekt: {$file_path}." );
             return;
         }
 
         wp_enqueue_style(
             $this->generate_handle( $relative_path ),
             $file_url,
-            [], 
+            [],
             filemtime( $file_path )
         );
     }
