@@ -3,7 +3,7 @@
 jQuery(document).ready(($) => {
   // Configuratie-object met defaults
   const config = {
-    defaultKgPerBag: 15,
+    defaultKgPerBag: 15, // Default gewicht per zak
   };
 
   // ---------------------------------------------------------------------------
@@ -12,23 +12,23 @@ jQuery(document).ready(($) => {
   const initializeCalculator = (calculator) => {
     // Cache alle belangrijke DOM-elementen binnen de calculator
     const $inputs = {
-      egalineMm: calculator.find('.egaline-mm'),
-      egalineM2: calculator.find('.egaline-m2'),
-      resultBags: calculator.find('.result-bags'),
-      resultKg: calculator.find('.result-kg'),
-      totalPrice: calculator.find('.total-price span'),
-      variationId: calculator.find('.calculator-variation-id'),
-      qtyBtns: calculator.find('.qty-btn'),
-      labelEgalineMm: calculator.find('.egaline-mm-label'),
-      labelEgalineM2: calculator.find('.egaline-m2-label'),
-      labelResultBags: calculator.find('.result-bags-label'),
+      egalineMm: calculator.find('.egaline-mm'), // Dikte van de egaline (mm)
+      egalineM2: calculator.find('.egaline-m2'), // Oppervlakte in m²
+      resultBags: calculator.find('.result-bags'), // Aantal zakken
+      resultKg: calculator.find('.result-kg'), // Gewicht (kg)
+      totalPrice: calculator.find('.total-price span'), // Totaalprijs
+      variationId: calculator.find('.calculator-variation-id'), // Variatie ID
+      qtyBtns: calculator.find('.qty-btn'), // Plus/minus knoppen
+      labelEgalineMm: calculator.find('.egaline-mm-label'), // Label voor dikte
+      labelEgalineM2: calculator.find('.egaline-m2-label'), // Label voor oppervlakte
+      labelResultBags: calculator.find('.result-bags-label'), // Label voor zakken
     };
 
     // Haal configuratie uit data-attributen (fallback naar defaults)
-    const KG_PER_MM = parseFloat(calculator.data('kg-per-mm')) || 0;
-    const KG_PER_M2 = parseFloat(calculator.data('kg-per-m2')) || 0;
-    const BAG_WEIGHT = parseFloat(calculator.data('kg-per-bag')) || config.defaultKgPerBag;
-    const calculationMode = calculator.data('calculation-mode') || 'kg_per_mm';
+    const KG_PER_MM = parseFloat(calculator.data('kg-per-mm')) || 0; // Gewicht per mm
+    const KG_PER_M2 = parseFloat(calculator.data('kg-per-m2')) || 0; // Gewicht per m²
+    const BAG_WEIGHT = parseFloat(calculator.data('kg-per-bag')) || config.defaultKgPerBag; // Gewicht per zak
+    const calculationMode = calculator.data('calculation-mode') || 'kg_per_mm'; // Rekenmodus (kg per mm)
 
     // Houd bij welk veld als laatste is bewerkt
     let lastEdited = null;
@@ -42,7 +42,7 @@ jQuery(document).ready(($) => {
         calculationMode === 'kg_per_mm' ? "Hoe dik egaliseren in mm?" : "Aantal lagen in mm"
       );
       $inputs.labelEgalineM2.text("Aantal m² egaliseren?");
-      $inputs.labelResultBags.text(`Aantal zakken (${BAG_WEIGHT}kg)`);
+      $inputs.labelResultBags.text(`Aantal zakken (${BAG_WEIGHT}kg)`); // Veranderd de label naar het gewicht per zak
     };
 
     // Zet standaardwaarden in de invoervelden
@@ -58,7 +58,7 @@ jQuery(document).ready(($) => {
     const calculateNeededKg = () => {
       const thickness = parseFloat($inputs.egalineMm.val()) || 0;
       const area = parseFloat($inputs.egalineM2.val()) || 0;
-      return (thickness * area * KG_PER_MM) + (area * KG_PER_M2);
+      return (thickness * area * KG_PER_MM) + (area * KG_PER_M2); // Gewicht in kg berekenen
     };
 
     // Bereken en update de resultaten (gewicht, aantal zakken, totaalprijs)
@@ -69,40 +69,85 @@ jQuery(document).ready(($) => {
       pricePerBag = varPrice;
 
       if (lastEdited === "mm" || lastEdited === "m2" || !lastEdited) {
-        totalKg = calculateNeededKg();
-        calculatedBags = Math.ceil(totalKg / BAG_WEIGHT);
-        totalPriceValue = calculatedBags * pricePerBag;
+        totalKg = calculateNeededKg(); // Bereken het totale gewicht
+        calculatedBags = Math.ceil(totalKg / BAG_WEIGHT); // Bereken aantal zakken
+        totalPriceValue = calculatedBags * pricePerBag; // Bereken de totaalprijs
         if (!$inputs.resultBags.is(':focus')) {
-          $inputs.resultBags.val(totalKg > 0 ? calculatedBags : 0);
+          $inputs.resultBags.val(totalKg > 0 ? calculatedBags : 0); // Update het aantal zakken als het veld niet gefocust is
         }
       } else if (lastEdited === "sacks") {
-        calculatedBags = parseInt($inputs.resultBags.val(), 10) || 0;
-        totalKg = calculatedBags * BAG_WEIGHT;
-        totalPriceValue = calculatedBags * pricePerBag;
+        calculatedBags = parseInt($inputs.resultBags.val(), 10) || 0; // Aantal zakken via invoer
+        totalKg = calculatedBags * BAG_WEIGHT; // Totaalgewicht berekenen
+        totalPriceValue = calculatedBags * pricePerBag; // Totaalprijs op basis van zakken
         const thickness = parseFloat($inputs.egalineMm.val()) || 0;
         const factor = (thickness * KG_PER_MM) + KG_PER_M2;
         if (factor > 0 && !$inputs.egalineM2.is(':focus')) {
-          const computedArea = totalKg / factor;
+          const computedArea = totalKg / factor; // Bereken het oppervlakte
           $inputs.egalineM2.val(Math.round(computedArea));
         }
       }
 
-      $inputs.resultKg.text(formatNumber(totalKg));
-      $inputs.totalPrice.text(totalPriceValue.toFixed(2) + ' EUR');
-      updateLabel();
+      $inputs.resultKg.text(formatNumber(totalKg)); // Toon het totale gewicht
+      $inputs.totalPrice.text(totalPriceValue.toFixed(2) + ' EUR'); // Toon de totaalprijs
+      updateLabel(); // Update de labels
     };
+
+    // Voeg validatie toe bij klikken op de 'Calculate' knop of wanneer de invoervelden leeg zijn
+    const validateFields = () => {
+      let isValid = true;
+
+      // Controleer of velden leeg zijn en voeg rode rand toe
+      $inputs.egalineMm.each(function() {
+        if ($(this).val() === '') {
+          $(this).css('border', '1px solid red');
+          isValid = false;
+        } else {
+          $(this).css('border', '');
+        }
+      });
+
+      $inputs.egalineM2.each(function() {
+        if ($(this).val() === '') {
+          $(this).css('border', '1px solid red');
+          isValid = false;
+        } else {
+          $(this).css('border', '');
+        }
+      });
+
+      $inputs.resultBags.each(function() {
+        if ($(this).val() === '') {
+          $(this).css('border', '1px solid red');
+          isValid = false;
+        } else {
+          $(this).css('border', '');
+        }
+      });
+
+      if (!isValid) {
+        alert("Vul alle velden in voordat je verder gaat!"); // Laat een waarschuwing zien als velden leeg zijn
+      }
+      return isValid;
+    };
+
+    // Bind de validate functie voor het submitten van de calculator
+    $('#calculate_button').on('click', function() {
+      if (!validateFields()) {
+        return false; // Voorkom verdere verwerking als velden leeg zijn
+      }
+    });
 
     // Bind events aan de invoervelden
     $inputs.egalineMm.on('input change', () => {
-      lastEdited = "mm";
+      lastEdited = "mm"; // Laatste bewerkte veld is mm
       updateResults();
     });
     $inputs.egalineM2.on('input change', () => {
-      lastEdited = "m2";
+      lastEdited = "m2"; // Laatste bewerkte veld is m²
       updateResults();
     });
     $inputs.resultBags.on('input change', () => {
-      lastEdited = "sacks";
+      lastEdited = "sacks"; // Laatste bewerkte veld is zakken
       updateResults();
     });
 
@@ -129,8 +174,8 @@ jQuery(document).ready(($) => {
   // ---------------------------------------------------------------------------
   const initCalculators = () => {
     $('.egaline-calculator').each(function() {
-      initializeCalculator($(this));
-      console.log("Calculator instance initialized:", $(this));
+      initializeCalculator($(this)); // Initialiseert iedere calculator
+      console.log("Calculator instance initialized:", $(this)); // Log de geïnitieerde calculator
     });
   };
 
@@ -141,27 +186,50 @@ jQuery(document).ready(($) => {
   // ---------------------------------------------------------------------------
   $('form.cart').off('submit.calculatorSubmit').on('submit.calculatorSubmit', function() {
     const $form = $(this);
+
     // Verwijder bestaande hidden inputs (voorkomt duplicatie bij meerdere submits)
     $form.find('input.egaline-hidden').remove();
 
     // Zoek de zichtbare calculator; als geen zichtbaar is, pak de eerste.
     let $calculator = $('.egaline-calculator:visible').first();
     if (!$calculator.length) {
-      $calculator = $('.egaline-calculator').first();
+      $calculator = $('.egaline-calculator').first(); // Als geen zichtbare calculator is, pak de eerste
     }
 
     // Verkrijg de inputwaarden en converteer ze naar getallen.
     const thickness = parseFloat($calculator.find('.egaline-mm').val()) || 0;
     const area = parseFloat($calculator.find('.egaline-m2').val()) || 0;
+    const bags = parseInt($calculator.find('.result-bags').val(), 10) || 0;
 
-    // Controleer of beide waarden groter zijn dan 0.
-    if (thickness <= 0 || area <= 0) {
-      alert("Voer a.u.b. de vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen.");
-      return false; // Voorkom verzending van het formulier.
+    // VALIDATIE: Controleer of de velden leeg zijn en voeg een rode rand toe
+    let isValid = true;
+
+    // Voeg validatie toe voor de invoervelden
+    if (thickness <= 0 || area <= 0 || bags <= 0) {
+      // Voeg een rode rand toe als de velden leeg zijn
+      if (thickness <= 0) {
+        $calculator.find('.egaline-mm').css('border', '1px solid red');
+      }
+      if (area <= 0) {
+        $calculator.find('.egaline-m2').css('border', '1px solid red');
+      }
+      if (bags <= 0) {
+        $calculator.find('.result-bags').css('border', '1px solid red');
+      }
+
+      alert("Vul alle vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen.");
+      isValid = false;
+    } else {
+      // Reset de randkleur als de velden geldig zijn
+      $calculator.find('.egaline-mm, .egaline-m2, .result-bags').css('border', '');
+    }
+
+    // Voorkom verzending van het formulier als de validatie niet slaagt
+    if (!isValid) {
+      return false; // Stop met verzenden
     }
 
     // Indien validatie slaagt, haal overige velden op.
-    const bags = $calculator.find('.result-bags').val();
     const variation_id = $calculator.find('.calculator-variation-id').val();
 
     // Voeg de benodigde hidden inputs toe aan het formulier.
@@ -212,7 +280,7 @@ jQuery(document).ready(($) => {
           cleanPrice = cleanPrice ? cleanPrice.textContent.trim() : defaultVariation.price_html;
           $('.egaline-calculator').each(function() {
             $(this).data('variation-price', defaultVariation.display_price);
-            $(this).find('.calc-variation-price').html(` (${cleanPrice})`).show();
+            $(this).find('.calc-variation-price').html(`(${cleanPrice})`).show();
           });
         }
       }
@@ -226,7 +294,7 @@ jQuery(document).ready(($) => {
         cleanPrice = cleanPrice ? cleanPrice.textContent.trim() : variation.price_html;
         $('.egaline-calculator').each(function() {
           $(this).data('variation-price', variation.display_price);
-          $(this).find('.calc-variation-price').html(` (${cleanPrice})`).show();
+          $(this).find('.calc-variation-price').html(`(${cleanPrice})`).show();
           $(this).find('.calculator-variation-id').val(variation.variation_id);
           $(this).find('.egaline-mm, .egaline-m2, .result-bags').val(0).trigger('change');
           $(this).find('.result-kg').text('0');

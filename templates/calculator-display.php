@@ -14,9 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
         <h3>
             Bereken het aantal zakken
-            <?php if ( ! empty( $variation_id ) ) : ?>
-                <span class="calc-variation-price"><?php echo wc_price( $regular_price ); ?></span>
-            <?php endif; ?>
         </h3>
 
         <!-- Verborgen veld voor de variation ID -->
@@ -64,7 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <div class="total-price">
             <div class="total-price-row">
                 <h4>Totaalprijs:</h4>
-                <span class="total-price-value">0.00 EUR</span>
+                <span class="total-price-value"><?php echo number_format( 0.00, 2, ',', '' ); ?></span>
             </div>
             <div class="total-price-note">
                 <p class="incl-btw"><?php esc_html_e( 'Inclusief BTW', 'egaline' ); ?></p>
