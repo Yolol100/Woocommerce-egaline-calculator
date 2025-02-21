@@ -1,4 +1,4 @@
-# Egaline Calculator Plugin for WooCommerce
+## Egaline Calculator Plugin for WooCommerce
 
 A robust and customizable WooCommerce integration for displaying a material calculator on product pages. The plugin allows users to calculate material quantities (e.g., kg per m², kg per mm) based on product attributes and prices. This plugin is designed for seamless use within WooCommerce stores.
 
