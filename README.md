@@ -22,4 +22,4 @@ A robust and customizable WooCommerce integration for displaying a material calc
 1. **Download** the plugin zip file or clone this repository to your local machine.
 
    ```bash
-   git clone https://github.com/Yolol100/egaline-calculator.git
+   git clone https://github.com/yolol100/egaline-calculator.git
