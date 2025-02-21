@@ -35,9 +35,9 @@ final class Egaline_Calculator_Metabox {
      * Registreert de benodigde acties voor het weergeven en opslaan van metabox-gegevens.
      */
     public function __construct() {
-        add_action('woocommerce_product_options_general_product_data', [ $this, 'render_metabox_fields' ]);
-        add_action('woocommerce_process_product_meta', [ $this, 'persist_metabox_data' ]);
-        add_action('admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts' ]);
+        add_action('woocommerce_product_options_general_product_data', [$this, 'render_metabox_fields']);
+        add_action('woocommerce_process_product_meta', [$this, 'persist_metabox_data']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
     }
 
     /**
@@ -62,6 +62,8 @@ final class Egaline_Calculator_Metabox {
      */
     public function render_metabox_fields(): void {
         global $post;
+        
+        // Haal de huidige meta-waarden op.
         $meta_values = [
             'enable_calculator' => get_post_meta($post->ID, $this->meta_key_enable, true),
             'kg_per_bag'        => get_post_meta($post->ID, $this->meta_key_kg_per_bag, true),
@@ -92,32 +94,24 @@ final class Egaline_Calculator_Metabox {
             return;
         }
 
-        // Update de meta-velden. Gebruik null coalescing om warnings te voorkomen als keys niet bestaan.
-        update_post_meta(
-            $post_id,
-            $this->meta_key_enable,
-            isset($_POST[$this->meta_key_enable]) ? 'yes' : 'no'
-        );
-        update_post_meta(
-            $post_id,
-            $this->meta_key_kg_per_bag,
-            sanitize_text_field($_POST[$this->meta_key_kg_per_bag] ?? '')
-        );
-        update_post_meta(
-            $post_id,
-            $this->meta_key_kg_per_mm,
-            sanitize_text_field($_POST[$this->meta_key_kg_per_mm] ?? '')
-        );
-        update_post_meta(
-            $post_id,
-            $this->meta_key_kg_per_m2,
-            sanitize_text_field($_POST[$this->meta_key_kg_per_m2] ?? '')
-        );
-        update_post_meta(
-            $post_id,
-            $this->meta_key_calculation_mode,
-            sanitize_text_field($_POST[$this->meta_key_calculation_mode] ?? '')
-        );
+        // Update de meta-velden met gesanitiseerde waarden.
+        $this->update_meta_field($post_id, $this->meta_key_enable, $_POST[$this->meta_key_enable] ?? 'no');
+        $this->update_meta_field($post_id, $this->meta_key_kg_per_bag, $_POST[$this->meta_key_kg_per_bag] ?? '');
+        $this->update_meta_field($post_id, $this->meta_key_kg_per_mm, $_POST[$this->meta_key_kg_per_mm] ?? '');
+        $this->update_meta_field($post_id, $this->meta_key_kg_per_m2, $_POST[$this->meta_key_kg_per_m2] ?? '');
+        $this->update_meta_field($post_id, $this->meta_key_calculation_mode, $_POST[$this->meta_key_calculation_mode] ?? '');
+    }
+
+    /**
+     * Helper functie voor het updaten van meta-velden met sanitization.
+     *
+     * @param int $post_id
+     * @param string $meta_key
+     * @param string $value
+     * @return void
+     */
+    private function update_meta_field(int $post_id, string $meta_key, string $value): void {
+        update_post_meta($post_id, $meta_key, sanitize_text_field($value));
     }
 }
 

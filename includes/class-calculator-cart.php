@@ -32,7 +32,7 @@ class Egaline_Calculator_Cart {
         // WooCommerce Fix: Voorkom dat identieke producten worden samengevoegd in de winkelwagen.
         add_filter(
             'woocommerce_cart_id',
-            function($cart_id, $product_id, $variation_id, $cart_item_data, $cart_item_key = '') {
+            function (string $cart_id, int $product_id, int $variation_id, array $cart_item_data, string $cart_item_key = ''): string {
                 if (!empty($cart_item_data['calculator_data'])) {
                     $cart_id .= '_' . md5(json_encode($cart_item_data['calculator_data']));
                 }
@@ -54,8 +54,7 @@ class Egaline_Calculator_Cart {
      * @return array Aangepaste cart item data met calculatorgegevens.
      */
     public function add_calculator_data_to_cart(array $cart_item_data, int $product_id): array {
-        $is_calculator_enabled = get_post_meta($product_id, '_enable_calculator', true);
-        if ($is_calculator_enabled !== 'yes') {
+        if (get_post_meta($product_id, '_enable_calculator', true) !== 'yes') {
             return $cart_item_data;
         }
 
@@ -75,6 +74,14 @@ class Egaline_Calculator_Cart {
         // Haal het product op en bepaal de reguliere prijs.
         $product = wc_get_product($product_id);
         $regular_price = (float) $product->get_price();
+
+        // Haal de variatieprijs op (indien van toepassing)
+        if (isset($_POST['variation_id']) && $_POST['variation_id'] != 0) {
+            $variation = wc_get_product((int) $_POST['variation_id']);
+            if ($variation) {
+                $regular_price = (float) $variation->get_price();
+            }
+        }
 
         // Bereken de totale prijs op basis van het aantal zakken.
         $total_price = $bags * $regular_price;
@@ -100,7 +107,7 @@ class Egaline_Calculator_Cart {
      *
      * @param WC_Cart $cart Het winkelwagenobject.
      */
-    public function update_cart_item_price($cart): void {
+    public function update_cart_item_price(WC_Cart $cart): void {
         if (is_admin() && !defined('DOING_AJAX')) {
             return;
         }
@@ -129,7 +136,7 @@ class Egaline_Calculator_Cart {
      * @param string $cart_item_key De sleutel van het winkelwagenitem.
      * @return string De gefilterde prijsweergave.
      */
-    public function filter_cart_item_price($price, array $cart_item, $cart_item_key): string {
+    public function filter_cart_item_price(string $price, array $cart_item, string $cart_item_key): string {
         if (isset($cart_item['calculator_data']['total_price'])) {
             $calc_price = (float) $cart_item['calculator_data']['total_price'];
             return wc_price($calc_price);
@@ -145,7 +152,7 @@ class Egaline_Calculator_Cart {
      * @param string $cart_item_key De sleutel van het winkelwagenitem.
      * @return string Het gefilterde subtotaal.
      */
-    public function filter_cart_item_subtotal($subtotal, array $cart_item, $cart_item_key): string {
+    public function filter_cart_item_subtotal(string $subtotal, array $cart_item, string $cart_item_key): string {
         if (isset($cart_item['calculator_data']['total_price'])) {
             $calc_price = (float) $cart_item['calculator_data']['total_price'];
             $line_total = $calc_price * $cart_item['quantity'];
@@ -161,7 +168,7 @@ class Egaline_Calculator_Cart {
      * @param WC_Cart   $cart_object Het winkelwagenobject.
      * @return float Het aangepaste totaal.
      */
-    public function filter_calculated_total($total, $cart_object): float {
+    public function filter_calculated_total(float $total, WC_Cart $cart_object): float {
         $calc_total = 0.0;
         foreach ($cart_object->get_cart() as $cart_item) {
             if (isset($cart_item['calculator_data']['total_price'])) {
@@ -181,11 +188,8 @@ class Egaline_Calculator_Cart {
      * @param string $cart_item_key De sleutel van het winkelwagenitem.
      * @return string De aangepaste tax class.
      */
-    public function filter_cart_item_tax_class(string $tax_class, array $cart_item, $cart_item_key): string {
-        if (isset($cart_item['calculator_data'])) {
-            return '';
-        }
-        return $tax_class;
+    public function filter_cart_item_tax_class(string $tax_class, array $cart_item, string $cart_item_key): string {
+        return isset($cart_item['calculator_data']) ? '' : $tax_class;
     }
 
     /**
@@ -196,7 +200,7 @@ class Egaline_Calculator_Cart {
      * @param string $cart_item_key De sleutel van het winkelwagenitem.
      * @return string De aangepaste class.
      */
-    public function add_cart_item_class(string $class, array $cart_item, $cart_item_key): string {
+    public function add_cart_item_class(string $class, array $cart_item, string $cart_item_key): string {
         if (isset($cart_item['calculator_data'])) {
             $class .= ' has-calculator-price';
         }

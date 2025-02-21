@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
             <div class="form-group">
-                <label class="egaline-m2-label" for="egaline-m2">Aantal m² egaliseren?</label>
+                <label class="egaline-m2-label" for="egaline-m2"><?php esc_html_e( 'Aantal m² egaliseren?', 'egaline' ); ?></label>
                 <div class="input-wrapper">
                     <button type="button" class="qty-btn minus" aria-label="Verminder aantal m²">−</button>
                     <input type="number" id="egaline-m2" name="egaline_m2" value="0" min="0" step="1" class="egaline-m2 egaline-input" aria-describedby="egaline-m2-help">
@@ -67,7 +67,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <span class="total-price-value">0.00 EUR</span>
             </div>
             <div class="total-price-note">
-                <p class="incl-btw">Inclusief BTW</p>
+                <p class="incl-btw"><?php esc_html_e( 'Inclusief BTW', 'egaline' ); ?></p>
             </div>
         </div>
     </div>

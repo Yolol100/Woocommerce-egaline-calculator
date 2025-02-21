@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             name="_enable_calculator" 
             value="yes" 
             <?php checked( $meta_values['enable_calculator'], 'yes' ); ?>
+            aria-checked="<?php echo esc_attr( $meta_values['enable_calculator'] === 'yes' ? 'true' : 'false' ); ?>"
         >
     </p>
 
@@ -24,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
         <label for="calculation_mode">
             <?php esc_html_e( 'Rekenmethode', 'egaline' ); ?>
         </label>
-        <select id="calculation_mode" name="_calculation_mode">
+        <select id="calculation_mode" name="_calculation_mode" aria-describedby="calculation_mode-help">
             <option value="kg_per_mm" <?php selected( $meta_values['calculation_mode'], 'kg_per_mm' ); ?>>
                 <?php esc_html_e( 'Kg per mm', 'egaline' ); ?>
             </option>
@@ -32,6 +33,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <?php esc_html_e( 'Lagen per mm', 'egaline' ); ?>
             </option>
         </select>
+        <p id="calculation_mode-help" class="description">
+            <?php esc_html_e( 'Kies de eenheid voor de rekensom.', 'egaline' ); ?>
+        </p>
     </p>
 
     <!-- Optiegroep: Label en input voor Kg per mm of Lagen per mm -->
@@ -45,7 +49,8 @@ if ( ! defined( 'ABSPATH' ) ) {
             name="_kg_per_mm" 
             value="<?php echo esc_attr( $meta_values['kg_per_mm'] ); ?>" 
             step="0.01" 
-            min="0"
+            min="0" 
+            aria-label="<?php esc_attr_e( 'Voer de waarde in voor kg per mm of lagen per mm', 'egaline' ); ?>"
         >
     </p>
 
@@ -61,6 +66,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             value="<?php echo esc_attr( $meta_values['kg_per_bag'] ); ?>" 
             step="0.1" 
             min="1"
+            aria-label="<?php esc_attr_e( 'Aantal kg per zak', 'egaline' ); ?>"
         >
     </p>
 
@@ -76,6 +82,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             value="<?php echo esc_attr( $meta_values['kg_per_m2'] ); ?>" 
             step="0.01" 
             min="0"
+            aria-label="<?php esc_attr_e( 'Aantal kg per vierkante meter', 'egaline' ); ?>"
         >
     </p>
 

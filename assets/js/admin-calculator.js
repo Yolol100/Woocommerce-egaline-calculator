@@ -3,12 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const labelKgPerMm = document.getElementById("label_kg_per_mm");
 
     // Controleer of beide elementen aanwezig zijn
-    if (!modeSelect || !labelKgPerMm) {
-        return;
+    if (modeSelect && labelKgPerMm) {
+        modeSelect.addEventListener("change", (event) => {
+            labelKgPerMm.textContent = (event.target.value === "kg_per_mm") 
+                ? "Kg per mm" 
+                : "Lagen per mm";
+        });
     }
-
-    modeSelect.addEventListener("change", (event) => {
-        const selectedValue = event.target.value;
-        labelKgPerMm.textContent = (selectedValue === "kg_per_mm") ? "Kg per mm" : "Lagen per mm";
-    });
 });

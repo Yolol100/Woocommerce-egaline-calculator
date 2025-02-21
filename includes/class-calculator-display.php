@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-if ( ! class_exists( 'Egaline_Calculator_Display' ) ) {
+if (!class_exists('Egaline_Calculator_Display')) {
     class Egaline_Calculator_Display {
 
         /**
          * Constructor.
          *
-         * Zorgt dat de calculator vóór het add-to-cart formulier getoond wordt.
+         * Zorgt ervoor dat de calculator vóór het add-to-cart formulier getoond wordt.
          */
         public function __construct() {
-            add_action( 'woocommerce_before_add_to_cart_form', [ $this, 'display_calculator' ] );
+            add_action('woocommerce_before_add_to_cart_form', [$this, 'display_calculator']);
         }
 
         /**
@@ -22,27 +22,27 @@ if ( ! class_exists( 'Egaline_Calculator_Display' ) ) {
             global $product;
 
             // Controleer of het product een geldig WooCommerce-product is.
-            if ( ! $this->is_valid_product( $product ) ) {
+            if (!$this->is_valid_product($product)) {
                 return;
             }
 
             $product_id = $product->get_id();
 
             // Controleer of de calculator voor dit product is ingeschakeld.
-            $enabled = get_post_meta( $product_id, '_enable_calculator', true );
-            if ( 'yes' !== $enabled ) {
+            $enabled = get_post_meta($product_id, '_enable_calculator', true);
+            if ('yes' !== $enabled) {
                 return;
             }
 
             // Haal de benodigde metadata op en controleer of alle vereiste waarden aanwezig zijn.
-            $metadata = $this->get_product_metadata( $product );
-            if ( ! $this->is_valid_metadata( $metadata ) ) {
+            $metadata = $this->get_product_metadata($product);
+            if (!$this->is_valid_metadata($metadata)) {
                 $this->display_error_message();
                 return;
             }
 
             // Laad het template en maak de metadata beschikbaar.
-            $this->load_template( $metadata );
+            $this->load_template($metadata);
         }
 
         /**
@@ -51,8 +51,8 @@ if ( ! class_exists( 'Egaline_Calculator_Display' ) ) {
          * @param mixed $product
          * @return bool
          */
-        private function is_valid_product( $product ): bool {
-            return is_a( $product, 'WC_Product' );
+        private function is_valid_product($product): bool {
+            return $product instanceof WC_Product;
         }
 
         /**
@@ -64,32 +64,21 @@ if ( ! class_exists( 'Egaline_Calculator_Display' ) ) {
          * @param WC_Product $product
          * @return array
          */
-        private function get_product_metadata( $product ): array {
+        private function get_product_metadata(WC_Product $product): array {
             $product_id = $product->get_id();
             $metadata = [
-                'kg_per_bag'      => max( 1, (float) get_post_meta( $product_id, '_kg_per_bag', true ) ),
-                'kg_per_mm'       => (float) get_post_meta( $product_id, '_kg_per_mm', true ) ?: 0,
-                'kg_per_m2'       => (float) get_post_meta( $product_id, '_kg_per_m2', true ) ?: 0,
-                'calculation_mode'=> get_post_meta( $product_id, '_calculation_mode', true ) ?: 'kg_per_mm',
+                'kg_per_bag'      => max(1, (float) get_post_meta($product_id, '_kg_per_bag', true)),
+                'kg_per_mm'       => (float) get_post_meta($product_id, '_kg_per_mm', true) ?: 0,
+                'kg_per_m2'       => (float) get_post_meta($product_id, '_kg_per_m2', true) ?: 0,
+                'calculation_mode'=> get_post_meta($product_id, '_calculation_mode', true) ?: 'kg_per_mm',
                 'regular_price'   => 0,  // Wordt hieronder ingesteld
                 'variation_id'    => '',
             ];
 
-            if ( $product->is_type( 'variable' ) ) {
+            if ($product->is_type('variable')) {
                 // Zoek naar de default variatie via het is_default attribuut.
-                $default_variation = null;
-                foreach ( $product->get_available_variations() as $variation ) {
-                    if ( ! empty( $variation['is_default'] ) ) {
-                        $default_variation = $variation;
-                        break;
-                    }
-                }
-                // Als er geen default is, gebruik de eerste beschikbare variatie.
-                if ( ! $default_variation ) {
-                    $variations = $product->get_available_variations();
-                    $default_variation = reset( $variations );
-                }
-                if ( $default_variation ) {
+                $default_variation = $this->get_default_variation($product);
+                if ($default_variation) {
                     $metadata['regular_price'] = (float) $default_variation['display_price'];
                     $metadata['variation_id']  = $default_variation['variation_id'];
                 }
@@ -101,18 +90,30 @@ if ( ! class_exists( 'Egaline_Calculator_Display' ) ) {
         }
 
         /**
+         * Haalt de standaard variatie op voor een variabel product.
+         *
+         * @param WC_Product $product
+         * @return array|null
+         */
+        private function get_default_variation(WC_Product $product): ?array {
+            foreach ($product->get_available_variations() as $variation) {
+                if (!empty($variation['is_default'])) {
+                    return $variation;
+                }
+            }
+
+            // Als er geen default is, gebruik de eerste beschikbare variatie.
+            return reset($product->get_available_variations()) ?: null;
+        }
+
+        /**
          * Controleert of alle vereiste metadata aanwezig is.
          *
          * @param array $metadata
          * @return bool
          */
-        private function is_valid_metadata( array $metadata ): bool {
-            foreach ( $metadata as $key => $value ) {
-                if ( null === $value ) {
-                    return false;
-                }
-            }
-            return true;
+        private function is_valid_metadata(array $metadata): bool {
+            return !in_array(null, $metadata, true);
         }
 
         /**
@@ -121,7 +122,7 @@ if ( ! class_exists( 'Egaline_Calculator_Display' ) ) {
          * @return void
          */
         private function display_error_message(): void {
-            esc_html_e( 'Calculator kan niet worden weergegeven vanwege ontbrekende productinstellingen.', 'egaline' );
+            esc_html_e('Calculator kan niet worden weergegeven vanwege ontbrekende productinstellingen.', 'egaline');
         }
 
         /**
@@ -130,14 +131,14 @@ if ( ! class_exists( 'Egaline_Calculator_Display' ) ) {
          * @param array $metadata
          * @return void
          */
-        private function load_template( array $metadata ): void {
-            $template_path = plugin_dir_path( __FILE__ ) . '../templates/calculator-display.php';
-            if ( file_exists( $template_path ) ) {
+        private function load_template(array $metadata): void {
+            $template_path = plugin_dir_path(__FILE__) . '../templates/calculator-display.php';
+            if (file_exists($template_path)) {
                 // Maak de metadata beschikbaar in het template.
-                extract( $metadata );
+                extract($metadata);
                 include $template_path;
             } else {
-                esc_html_e( 'Calculator-templatebestand niet gevonden.', 'egaline' );
+                esc_html_e('Calculator-templatebestand niet gevonden.', 'egaline');
             }
         }
     }

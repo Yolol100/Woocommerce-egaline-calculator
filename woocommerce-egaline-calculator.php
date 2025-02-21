@@ -4,7 +4,7 @@
  * Plugin URI: https://example.com/egaline-calculator.
  * Description: Voegt een professionele egalinecalculator toe aan WooCommerce-producten.
  * Version: 1.0.0.
- * Author: Jouw Naam.
+ * Author: Webactueel
  * Author URI: https://example.com.
  * Text Domain: egaline-calculator.
  * Domain Path: /languages.
@@ -17,24 +17,24 @@
 defined( 'ABSPATH' ) || exit;
 
 final class Egaline_Calculator_Init {
-    /** Plugin versie. */
+    /** @var string Plugin versie */
     private const VERSION = '1.0.0';
 
-    /** Text domain voor internationalisatie. */
+    /** @var string Text domain voor internationalisatie */
     private const TEXT_DOMAIN = 'egaline-calculator';
 
-    /** Bestanden die vereist zijn. */
+    /** @var array Bestanden die vereist zijn */
     private const REQUIRED_FILES = [
         'includes/class-calculator-display.php',
         'includes/class-calculator-metabox.php',
         'includes/class-calculator-cart.php',
     ];
 
-    /** @var string Plugin directory pad. */
-    private string $plugin_path;
+    /** @var string Plugin directory pad */
+    private readonly string $plugin_path;
 
-    /** @var string Plugin URL. */
-    private string $plugin_url;
+    /** @var string Plugin URL */
+    private readonly string $plugin_url;
 
     /**
      * Constructor.
@@ -57,10 +57,10 @@ final class Egaline_Calculator_Init {
     private function includes(): void {
         foreach ( self::REQUIRED_FILES as $file ) {
             $file_path = $this->plugin_path . $file;
-            if ( is_file( $file_path ) && is_readable( $file_path ) ) {
+            if ( is_readable( $file_path ) ) {
                 require_once $file_path;
             } else {
-                error_log( "[Egaline Calculator] Bestand niet gevonden of niet leesbaar: {$file_path}." );
+                $this->log_error( "Bestand niet gevonden of niet leesbaar: {$file_path}." );
             }
         }
     }
@@ -85,10 +85,7 @@ final class Egaline_Calculator_Init {
             return;
         }
 
-        // Enqueue JavaScript.
         $this->enqueue_script( 'assets/js/calculator.js', [ 'jquery' ], true );
-
-        // Enqueue CSS.
         $this->enqueue_style( 'assets/css/calculator.css' );
     }
 
@@ -105,7 +102,7 @@ final class Egaline_Calculator_Init {
         $file_url  = $this->plugin_url . $relative_path;
 
         if ( ! file_exists( $file_path ) ) {
-            error_log( "[Egaline Calculator] JS bestand ontbreekt: {$file_path}." );
+            $this->log_error( "JS bestand ontbreekt: {$file_path}." );
             return;
         }
 
@@ -129,7 +126,7 @@ final class Egaline_Calculator_Init {
         $file_url  = $this->plugin_url . $relative_path;
 
         if ( ! file_exists( $file_path ) ) {
-            error_log( "[Egaline Calculator] CSS bestand ontbreekt: {$file_path}." );
+            $this->log_error( "CSS bestand ontbreekt: {$file_path}." );
             return;
         }
 
@@ -152,6 +149,16 @@ final class Egaline_Calculator_Init {
     }
 
     /**
+     * Logt foutmeldingen naar de error log.
+     *
+     * @param string $message De foutmelding.
+     * @return void
+     */
+    private function log_error( string $message ): void {
+        error_log( "[Egaline Calculator] {$message}" );
+    }
+
+    /**
      * Controleert of WooCommerce is geïnstalleerd.
      *
      * Toont een admin-notice als WooCommerce niet aanwezig is.
@@ -159,17 +166,22 @@ final class Egaline_Calculator_Init {
      * @return void
      */
     public function check_dependencies(): void {
-        if ( class_exists( 'WooCommerce' ) ) {
-            return;
+        if ( ! class_exists( 'WooCommerce' ) ) {
+            add_action( 'admin_notices', fn() => $this->display_dependency_notice() );
         }
+    }
 
-        add_action( 'admin_notices', function() {
-            $message = __( 'Egaline Calculator vereist WooCommerce om te werken.', self::TEXT_DOMAIN );
-            printf(
-                '<div class="notice notice-error"><p>%s</p></div>',
-                esc_html( $message )
-            );
-        } );
+    /**
+     * Toont een admin-notice wanneer WooCommerce ontbreekt.
+     *
+     * @return void
+     */
+    private function display_dependency_notice(): void {
+        $message = __( 'Egaline Calculator vereist WooCommerce om te werken.', self::TEXT_DOMAIN );
+        printf(
+            '<div class="notice notice-error"><p>%s</p></div>',
+            esc_html( $message )
+        );
     }
 }
 

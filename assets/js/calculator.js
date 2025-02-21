@@ -1,7 +1,7 @@
 "use strict";
-jQuery(document).ready(($) => {
 
-  // Een centraal configuratieobject (hier kun je defaults aanpassen)
+jQuery(document).ready(($) => {
+  // Configuratie-object met defaults
   const config = {
     defaultKgPerBag: 15,
   };
@@ -24,7 +24,7 @@ jQuery(document).ready(($) => {
       labelResultBags: calculator.find('.result-bags-label'),
     };
 
-    // Haal configuratie uit data-attributen (eventueel met fallback naar defaults)
+    // Haal configuratie uit data-attributen (fallback naar defaults)
     const KG_PER_MM = parseFloat(calculator.data('kg-per-mm')) || 0;
     const KG_PER_M2 = parseFloat(calculator.data('kg-per-m2')) || 0;
     const BAG_WEIGHT = parseFloat(calculator.data('kg-per-bag')) || config.defaultKgPerBag;
