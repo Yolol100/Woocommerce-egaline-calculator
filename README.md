@@ -1,26 +1,26 @@
-# **Egaline Calculator Plugin for WooCommerce**  
+## **Egaline Calculator Plugin for WooCommerce**  
 
 A powerful and highly customizable WooCommerce extension that adds a material calculator to product pages. The plugin allows customers to calculate the required material quantity (e.g., kg per m², kg per mm) based on their input. It seamlessly integrates with WooCommerce and ensures accurate price calculations.
 
 ## 🚀 **Features**  
 
-### ✅ **Advanced Material Calculator**
+### **Advanced Material Calculator**
 - Dynamically calculates the required material quantity based on **thickness (mm), area (m²), and number of bags**.
 - Allows **real-time adjustments**—when increasing thickness, area and bag count adjust accordingly.
 - Ensures logical dependencies:  
   - **If thickness increases**, area and bag count update.  
   - **If area or bag count is modified manually**, thickness remains unchanged.
 
-### ✅ **Smart Price Calculation**
+### **Smart Price Calculation**
 - Dynamically updates **total price** based on selected product options.
 - **Automatic discount calculation** if a threshold is reached (e.g., bulk purchase discounts).
 
-### ✅ **Seamless WooCommerce Integration**
+### **Seamless WooCommerce Integration**
 - Appears **before the "Add to Cart" button** on product pages.
 - Works with **simple and variable products**.
 - Supports **dynamic price updates** when a variation is selected.
 
-### ✅ **Customizable Admin Panel**
+### **Customizable Admin Panel**
 - Enables product-specific settings through a **custom WooCommerce metabox**.
 - Configure:
   - **Material weight per bag**
@@ -29,12 +29,12 @@ A powerful and highly customizable WooCommerce extension that adds a material ca
   - **Discount settings (threshold & percentage)**
   - **Enable/disable calculator per product**
 
-### ✅ **Optimized User Experience**
+### **Optimized User Experience**
 - **Instant feedback**—users see real-time changes in calculated values.
 - **Input validation** to ensure only valid numbers are entered.
 - **LocalStorage Support**—retains calculator values even after a page refresh.
 
-### ✅ **Performance & Security**
+### **Performance & Security**
 - Fully **AJAX-based** for smooth interaction without page reloads.
 - **Sanitized user input** to prevent security vulnerabilities.
 - Optimized for **speed and performance** with WooCommerce.
