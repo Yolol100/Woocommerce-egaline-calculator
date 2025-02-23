@@ -1,17 +1,17 @@
 <?php
 /**
- * Plugin Name: WooCommerce Egaline Calculator.
- * Plugin URI: https://example.com/egaline-calculator.
- * Description: Voegt een professionele egalinecalculator toe aan WooCommerce-producten.
+ * Plugin Name: WooCommerce Egaline Calculator
+ * Plugin URI: https://example.com/egaline-calculator
+ * Description: Voegt een professionele egalinecalculator toe aan WooCommerce-producten
  * Version: 1.0.0.
  * Author: Webactueel
  * Author URI: https://example.com.
- * Text Domain: egaline-calculator.
- * Domain Path: /languages.
- * Requires PHP: 8.0.
- * Requires at least: 6.0.
- * WC requires at least: 6.0.
- * WC tested up to: 9.0.
+ * Text Domain: egaline-calculator
+ * Domain Path: /languages
+ * Requires PHP: 8.0
+ * Requires at least: 6.0
+ * WC requires at least: 6.0
+ * WC tested up to: 9.0
  */
 
 defined( 'ABSPATH' ) || exit;

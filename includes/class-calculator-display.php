@@ -41,7 +41,7 @@ if (!class_exists('Egaline_Calculator_Display')) {
                 return;
             }
 
-            // Laad het template en maak de metadata beschikbaar.
+            // Laad de template (de template bevat de container en form)
             $this->load_template($metadata);
         }
 
@@ -67,12 +67,12 @@ if (!class_exists('Egaline_Calculator_Display')) {
         private function get_product_metadata(WC_Product $product): array {
             $product_id = $product->get_id();
             $metadata = [
-                'kg_per_bag'      => max(1, (float) get_post_meta($product_id, '_kg_per_bag', true)),
-                'kg_per_mm'       => (float) get_post_meta($product_id, '_kg_per_mm', true) ?: 0,
-                'kg_per_m2'       => (float) get_post_meta($product_id, '_kg_per_m2', true) ?: 0,
-                'calculation_mode'=> get_post_meta($product_id, '_calculation_mode', true) ?: 'kg_per_mm',
-                'regular_price'   => 0,  // Wordt hieronder ingesteld
-                'variation_id'    => '',
+                'kg_per_bag'       => max(1, (float) get_post_meta($product_id, '_kg_per_bag', true)),
+                'kg_per_mm'        => (float) get_post_meta($product_id, '_kg_per_mm', true) ?: 0,
+                'kg_per_m2'        => (float) get_post_meta($product_id, '_kg_per_m2', true) ?: 0,
+                'calculation_mode' => get_post_meta($product_id, '_calculation_mode', true) ?: 'kg_per_mm',
+                'regular_price'    => 0,  // Wordt hieronder ingesteld
+                'variation_id'     => '',
             ];
 
             if ($product->is_type('variable')) {
@@ -85,6 +85,10 @@ if (!class_exists('Egaline_Calculator_Display')) {
             } else {
                 $metadata['regular_price'] = (float) $product->get_price();
             }
+
+            // Toegevoegde discount metadata:
+            $metadata['discount_threshold'] = (int) get_post_meta($product_id, '_discount_threshold', true) ?: 0;
+            $metadata['discount_percentage'] = (float) get_post_meta($product_id, '_discount_percentage', true) ?: 0.0;
 
             return $metadata;
         }
@@ -136,6 +140,20 @@ if (!class_exists('Egaline_Calculator_Display')) {
             if (file_exists($template_path)) {
                 // Maak de metadata beschikbaar in het template.
                 extract($metadata);
+
+                // Bereken de initiële weergave voor de korting.
+                $discounted_price = $regular_price;
+                $show_discounted_price = false;
+                
+                if ($discount_threshold > 0 && $discount_percentage > 0) {
+                    $discounted_price = $regular_price - ($regular_price * ($discount_percentage / 100));
+                    $show_discounted_price = true;
+                }
+
+                // Wijziging: Format de prijzen zodat er geen onnodige nullen achter de komma of punt verschijnen.
+                $regular_price = rtrim(rtrim(number_format($regular_price, 2, '.', ''), '0'), '.');
+                $discounted_price = rtrim(rtrim(number_format($discounted_price, 2, '.', ''), '0'), '.');
+
                 include $template_path;
             } else {
                 esc_html_e('Calculator-templatebestand niet gevonden.', 'egaline');

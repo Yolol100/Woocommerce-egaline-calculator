@@ -85,6 +85,39 @@ if ( ! defined( 'ABSPATH' ) ) {
             aria-label="<?php esc_attr_e( 'Aantal kg per vierkante meter', 'egaline' ); ?>"
         >
     </p>
+    
+    <!-- Optiegroep: Aantal zakken voor korting -->
+    <p class="form-field">
+        <label for="discount_threshold">
+            <?php esc_html_e( 'Aantal zakken voor korting', 'egaline' ); ?>
+        </label>
+        <input 
+            type="number" 
+            id="discount_threshold" 
+            name="_discount_threshold" 
+            value="<?php echo esc_attr( $meta_values['discount_threshold'] ); ?>" 
+            step="1" 
+            min="1"
+            aria-label="<?php esc_attr_e( 'Minimaal aantal zakken voor korting', 'egaline' ); ?>"
+        >
+    </p>
+
+    <!-- Optiegroep: Kortingspercentage -->
+    <p class="form-field">
+        <label for="discount_percentage">
+            <?php esc_html_e( 'Kortingspercentage (%)', 'egaline' ); ?>
+        </label>
+        <input 
+            type="number" 
+            id="discount_percentage" 
+            name="_discount_percentage" 
+            value="<?php echo esc_attr( $meta_values['discount_percentage'] ); ?>" 
+            step="0.1" 
+            min="0"
+            max="100"
+            aria-label="<?php esc_attr_e( 'Kortingspercentage voor bulkbestellingen', 'egaline' ); ?>"
+        >
+    </p>
 
     <!-- Nonce veld voor beveiliging -->
     <?php wp_nonce_field( 'egaline_save_calculator_settings', 'egaline_calculator_nonce' ); ?>
