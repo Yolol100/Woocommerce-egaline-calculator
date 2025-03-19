@@ -72,8 +72,8 @@ final class Egaline_Calculator_Cart {
         $kg_per_mm  = (float) get_post_meta($product_id, '_kg_per_mm', true) ?: 0;
         $kg_per_m2  = (float) get_post_meta($product_id, '_kg_per_m2', true) ?: 0;
 
-        $thickness = isset($_POST['egaline_mm']) ? (float) sanitize_text_field((string) $_POST['egaline_mm']) : 0;
-        $area      = isset($_POST['egaline_m2'])  ? (float) sanitize_text_field((string) $_POST['egaline_m2'])  : 0;
+        $thickness = (float) sanitize_text_field((string) ($_POST['egaline_mm'] ?? 0));
+        $area      = (float) sanitize_text_field((string) ($_POST['egaline_m2'] ?? 0));
 
         // Bereken de benodigde hoeveelheid en het aantal zakken per eenheid
         $needed_kg = ($thickness * $area * $kg_per_mm) + ($area * $kg_per_m2);
@@ -82,7 +82,7 @@ final class Egaline_Calculator_Cart {
         $product = wc_get_product($product_id);
         $regular_price = (float) $product->get_price();
 
-        if (isset($_POST['variation_id']) && $_POST['variation_id'] != 0) {
+        if ((int) ($_POST['variation_id'] ?? 0) !== 0) {
             $variation = wc_get_product((int) $_POST['variation_id']);
             if ($variation) {
                 $regular_price = (float) $variation->get_price();
@@ -257,7 +257,7 @@ final class Egaline_Calculator_Cart {
     public function display_calculator_data_in_cart(array $item_data, array $cart_item): array {
         if (isset($cart_item['calculator_data'])) {
             $calculator_data = $cart_item['calculator_data'];
-            $quantity = isset($cart_item['quantity']) ? (int)$cart_item['quantity'] : 1;
+            $quantity = (int) ($cart_item['quantity'] ?? 1);
             if (isset($calculator_data['needed_kg'])) {
                 $item_data[] = [
                     'name'  => __('Benodigde hoeveelheid (kg)', 'egaline'),
@@ -290,10 +290,15 @@ final class Egaline_Calculator_Cart {
      * @param array                 $values        De waarden van het winkelwagenitem.
      * @param WC_Order              $order         Het orderobject.
      */
-    public function add_calculator_data_to_order_items($item, $cart_item_key, array $values, $order): void {
+    public function add_calculator_data_to_order_items(
+        WC_Order_Item_Product $item,
+        string $cart_item_key,
+        array $values,
+        WC_Order $order
+    ): void {
         if (isset($values['calculator_data'])) {
             $calculator_data = $values['calculator_data'];
-            $quantity = isset($values['quantity']) ? (int)$values['quantity'] : 1;
+            $quantity = (int) ($values['quantity'] ?? 1);
             if (isset($calculator_data['needed_kg'])) {
                 $item->add_meta_data(__('Benodigde hoeveelheid (kg)', 'egaline'), sprintf('%.2f kg', $calculator_data['needed_kg'] * $quantity));
             }
