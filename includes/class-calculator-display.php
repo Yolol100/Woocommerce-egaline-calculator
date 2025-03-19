@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-if (!class_exists('Egaline_Calculator_Display')) {
-    class Egaline_Calculator_Display {
+if (!class_exists(Egaline_Calculator_Display::class)) {
+    final class Egaline_Calculator_Display {
 
         /**
          * Constructor.
