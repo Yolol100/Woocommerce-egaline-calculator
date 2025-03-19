@@ -170,7 +170,7 @@ jQuery(document).ready(($) => {
       });
       // Verberg de waarschuwing als er een variatie is gekozen
       $(".calculator-warning").hide();
-      console.log(`Nieuwe variatie geselecteerd: ${variation.variation_id}`);
+      console.log("Nieuwe variatie geselecteerd: " + variation.variation_id);
     });
 
     // Extra waarschuwing: als de gebruiker focust op een invoerveld terwijl de calculator nog is uitgeschakeld,
@@ -275,28 +275,21 @@ jQuery(document).ready(($) => {
     });
 
     // Verbind plus/minus knoppen voor het aanpassen van de waarden
-    $inputs.qtyBtns
-      .off("click.qty")
-      .on("click.qty", (e) => {
-        e.preventDefault();
-        const $button = $(e.currentTarget);
-        const $input = $button.closest(".input-wrapper").find("input");
-        const currentVal = parseFloat($input.val()) || 0;
-        const step = parseFloat($input.attr("step")) || 1;
-        const isPlus = $button.hasClass("plus");
-        const newVal = isPlus ? currentVal + step : Math.max(0, currentVal - step);
-        $input
-          .val(step < 1 ? parseFloat(newVal.toFixed(1)).toString() : Math.round(newVal))
-          .trigger("input");
-      });
+    $inputs.qtyBtns.off("click.qty").on("click.qty", (e) => {
+      e.preventDefault();
+      const $button = $(e.currentTarget);
+      const $input = $button.closest(".input-wrapper").find("input");
+      const currentVal = parseFloat($input.val()) || 0;
+      const step = parseFloat($input.attr("step")) || 1;
+      const isPlus = $button.hasClass("plus");
+      const newVal = isPlus ? currentVal + step : Math.max(0, currentVal - step);
+      $input.val(step < 1 ? parseFloat(newVal.toFixed(1)).toString() : Math.round(newVal)).trigger("input");
+    });
 
     // Bind ook een change-event op de producthoeveelheid zodat de calculator direct herberekent wanneer dit verandert
-    calculator
-      .closest("form.cart")
-      .find("input.qty")
-      .on("change", () => {
-        updateResults();
-      });
+    calculator.closest("form.cart").find("input.qty").on("change", () => {
+      updateResults();
+    });
 
     // Voeg een custom event toe aan de calculator om deze te resetten
     calculator.on("resetCalculator", function () {
@@ -355,9 +348,7 @@ jQuery(document).ready(($) => {
         if (bags <= 0) {
           $calculator.find(".result-bags").css("border", "1px solid red");
         }
-        alert(
-          "Vul alle vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen."
-        );
+        alert("Vul alle vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen.");
         isValid = false;
       } else {
         $calculator.find(".egaline-mm, .egaline-m2, .result-bags").css("border", "");
@@ -438,16 +429,13 @@ jQuery(document).ready(($) => {
             .show();
           $(this).find(".calculator-variation-id").val(variation.variation_id);
           $(this).removeClass("calculator-disabled");
-          $(this)
-            .find(".egaline-mm, .egaline-m2, .result-bags")
-            .val(0)
-            .trigger("change");
+          $(this).find(".egaline-mm, .egaline-m2, .result-bags").val(0).trigger("change");
           $(this).find(".result-kg").text("0");
           $(this).find(".total-price span").text("0 EUR");
         });
         // Verberg de waarschuwing zodra er een variatie is gekozen
         $(".calculator-warning").hide();
-        console.log(`Nieuwe variatie geselecteerd: ${variation.variation_id}`);
+        console.log("Nieuwe variatie geselecteerd: " + variation.variation_id);
       }
     });
   }
@@ -458,10 +446,7 @@ jQuery(document).ready(($) => {
   jQuery(($) => {
     $(document.body).on("added_to_cart updated_cart_totals", () => {
       $.ajax({
-        url: wc_cart_fragments_params.wc_ajax_url.replace(
-          "%%endpoint%%",
-          "get_refreshed_fragments"
-        ),
+        url: wc_cart_fragments_params.wc_ajax_url.replace("%%endpoint%%", "get_refreshed_fragments"),
         method: "POST",
         success: (response) => {
           if (response && response.fragments) {
