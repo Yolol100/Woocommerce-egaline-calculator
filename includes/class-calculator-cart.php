@@ -290,10 +290,15 @@ final class Egaline_Calculator_Cart {
      * @param array                 $values        De waarden van het winkelwagenitem.
      * @param WC_Order              $order         Het orderobject.
      */
-    public function add_calculator_data_to_order_items($item, $cart_item_key, array $values, $order): void {
+    public function add_calculator_data_to_order_items(
+        WC_Order_Item_Product $item,
+        string $cart_item_key,
+        array $values,
+        WC_Order $order
+    ): void {
         if (isset($values['calculator_data'])) {
             $calculator_data = $values['calculator_data'];
-            $quantity = isset($values['quantity']) ? (int)$values['quantity'] : 1;
+            $quantity = isset($values['quantity']) ? (int) $values['quantity'] : 1;
             if (isset($calculator_data['needed_kg'])) {
                 $item->add_meta_data(__('Benodigde hoeveelheid (kg)', 'egaline'), sprintf('%.2f kg', $calculator_data['needed_kg'] * $quantity));
             }
