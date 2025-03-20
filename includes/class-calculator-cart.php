@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 /**
  * Voeg extra gegevens toe aan de winkelwagen en verwerk calculator-data.
  */
@@ -21,7 +19,7 @@ final class Egaline_Calculator_Cart {
         add_filter('woocommerce_get_cart_contents', [$this, 'fix_minicart_price_display'], 20);
     }
 
-    public function add_calculator_data_to_cart(array $cart_item_data, int $product_id): array {
+    public function add_calculator_data_to_cart($cart_item_data, $product_id) {
         if (get_post_meta($product_id, '_enable_calculator', true) !== 'yes') {
             return $cart_item_data;
         }
@@ -35,8 +33,8 @@ final class Egaline_Calculator_Cart {
         $kg_per_mm = (float) (get_post_meta($product_id, '_kg_per_mm', true) ?: 0);
         $kg_per_m2 = (float) (get_post_meta($product_id, '_kg_per_m2', true) ?: 0);
 
-        $thickness = isset($_POST['egaline_mm']) ? (float) sanitize_text_field((string) $_POST['egaline_mm']) : 0.0;
-        $area = isset($_POST['egaline_m2']) ? (float) sanitize_text_field((string) $_POST['egaline_m2']) : 0.0;
+        $thickness = isset($_POST['egaline_mm']) ? (float) sanitize_text_field($_POST['egaline_mm']) : 0.0;
+        $area = isset($_POST['egaline_m2']) ? (float) sanitize_text_field($_POST['egaline_m2']) : 0.0;
 
         $needed_kg = ($thickness * $area * $kg_per_mm) + ($area * $kg_per_m2);
         $bags = (int) ceil($needed_kg / $kg_per_bag);
@@ -76,7 +74,7 @@ final class Egaline_Calculator_Cart {
         ]);
     }
 
-    public function update_cart_item_price(WC_Cart $cart): void {
+    public function update_cart_item_price($cart) {
         if (is_admin() && !defined('DOING_AJAX')) {
             return;
         }
@@ -98,7 +96,7 @@ final class Egaline_Calculator_Cart {
         }
     }
 
-    public function display_calculator_data_in_cart(array $item_data, array $cart_item): array {
+    public function display_calculator_data_in_cart($item_data, $cart_item) {
         if (!isset($cart_item['calculator_data'])) {
             return $item_data;
         }
@@ -122,7 +120,7 @@ final class Egaline_Calculator_Cart {
         ]);
     }
 
-    public function add_calculator_data_to_order_items(WC_Order_Item_Product $item, string $cart_item_key, array $values, WC_Order $order): void {
+    public function add_calculator_data_to_order_items($item, $cart_item_key, $values, $order) {
         if (!isset($values['calculator_data'])) {
             return;
         }
@@ -139,7 +137,7 @@ final class Egaline_Calculator_Cart {
         }
     }
 
-    public function filter_cart_item_price(string $price, array $cart_item, string $cart_item_key): string {
+    public function filter_cart_item_price($price, $cart_item, $cart_item_key) {
         if (!isset($cart_item['calculator_data'])) {
             return $price;
         }
@@ -148,19 +146,19 @@ final class Egaline_Calculator_Cart {
         return wp_doing_ajax() ? wc_price($unit_price) : $price;
     }
 
-    public function filter_calculated_total(float $total, WC_Cart $cart): float {
-        return array_reduce($cart->get_cart(), function(float $carry, array $item) {
+    public function filter_calculated_total($total, $cart) {
+        return array_reduce($cart->get_cart(), function($carry, $item) {
             return $carry + ($item['calculator_data']['total_price'] ?? $item['data']->get_price()) * $item['quantity'];
         }, 0.0);
     }
 
-    public function generate_custom_cart_id(string $cart_id, int $product_id, int $variation_id, array $variation, array $cart_item_data): string {
+    public function generate_custom_cart_id($cart_id, $product_id, $variation_id, $variation, $cart_item_data) {
         return isset($cart_item_data['calculator_data'])
             ? $cart_id . '_' . hash('xxh128', json_encode($cart_item_data['calculator_data']))
             : $cart_id;
     }
 
-    public function restore_cart_item_data(array $cart_item, array $values): array {
+    public function restore_cart_item_data($cart_item, $values) {
         if (isset($values['calculator_data'])) {
             $cart_item['calculator_data'] = $values['calculator_data'];
             $cart_item['data'] = clone wc_get_product($cart_item['product_id']);
@@ -169,22 +167,22 @@ final class Egaline_Calculator_Cart {
         return $cart_item;
     }
 
-    public function add_cart_item_class(string $class, array $cart_item, string $cart_item_key): string {
+    public function add_cart_item_class($class, $cart_item, $cart_item_key) {
         return isset($cart_item['calculator_data']) ? "{$class} has-calculator-price" : $class;
     }
 
-    public function filter_cart_item_subtotal(string $subtotal, array $cart_item, string $cart_item_key): string {
+    public function filter_cart_item_subtotal($subtotal, $cart_item, $cart_item_key) {
         return isset($cart_item['calculator_data'])
             ? wc_price($cart_item['calculator_data']['total_price'] * $cart_item['quantity'])
             : $subtotal;
     }
 
-    public function filter_cart_item_tax_class(string $tax_class, array $cart_item, string $cart_item_key): string {
+    public function filter_cart_item_tax_class($tax_class, $cart_item, $cart_item_key) {
         return isset($cart_item['calculator_data']) ? '' : $tax_class;
     }
 
-    public function fix_minicart_price_display(array $cart_contents): array {
-        array_walk($cart_contents, function(array &$item) {
+    public function fix_minicart_price_display($cart_contents) {
+        array_walk($cart_contents, function(&$item) {
             if (isset($item['calculator_data'])) {
                 $item['data']->set_price((float) $item['calculator_data']['total_price']);
             }
