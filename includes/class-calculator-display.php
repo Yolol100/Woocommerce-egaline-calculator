@@ -1,18 +1,16 @@
 <?php
-declare(strict_types=1);
-
 if (!class_exists('Egaline_Calculator_Display')) {
     final class Egaline_Calculator_Display {
-        private string $template_path;
+        private $template_path;
+        private $plugin_path;
 
-        public function __construct(
-            private string $plugin_path = __DIR__,
-        ) {
+        public function __construct($plugin_path = __DIR__) {
+            $this->plugin_path = $plugin_path;
             $this->template_path = "{$this->plugin_path}/../templates/calculator-display.php";
             add_action('woocommerce_before_add_to_cart_form', [$this, 'display_calculator']);
         }
 
-        public function display_calculator(): void {
+        public function display_calculator() {
             global $product;
 
             if (!$this->is_valid_product($product)) return;
@@ -29,11 +27,11 @@ if (!class_exists('Egaline_Calculator_Display')) {
             $this->render_template($metadata);
         }
 
-        private function is_valid_product(mixed $product): bool {
+        private function is_valid_product($product) {
             return $product instanceof WC_Product;
         }
 
-        private function get_product_metadata(WC_Product $product): array {
+        private function get_product_metadata($product) {
             $product_id = $product->get_id();
             $metadata = [
                 'kg_per_bag' => max(1, (float) get_post_meta($product_id, '_kg_per_bag', true)),
@@ -59,33 +57,33 @@ if (!class_exists('Egaline_Calculator_Display')) {
             return $metadata;
         }
 
-        private function get_default_variation(WC_Product $product): ?array {
+        private function get_default_variation($product) {
             $variations = $product->get_available_variations();
-            return array_filter($variations, fn($v) => !empty($v['is_default']))[0] 
-                ?? ($variations[0] ?? null);
+            $filtered = array_filter($variations, function($v) {
+                return !empty($v['is_default']);
+            });
+            return !empty($filtered) ? reset($filtered) : ($variations[0] ?? null);
         }
 
-        private function is_valid_metadata(array $metadata): bool {
+        private function is_valid_metadata($metadata) {
             return !in_array(null, $metadata, true);
         }
 
-        private function display_error_message(): void {
+        private function display_error_message() {
             echo '<p class="error">', 
                 esc_html__('Calculator kan niet worden weergegeven vanwege ontbrekende productinstellingen.', 'egaline'), 
                 '</p>';
         }
 
-        private function render_template(array $metadata): void {
+        private function render_template($metadata) {
             if (!file_exists($this->template_path)) {
                 $this->display_template_error();
                 return;
             }
 
-            [
-                'regular_price' => $price,
-                'discount_threshold' => $threshold,
-                'discount_percentage' => $percentage
-            ] = $metadata;
+            $price = $metadata['regular_price'];
+            $threshold = $metadata['discount_threshold'];
+            $percentage = $metadata['discount_percentage'];
 
             $template_data = [
                 'metadata' => $metadata,
@@ -101,17 +99,17 @@ if (!class_exists('Egaline_Calculator_Display')) {
             include $this->template_path;
         }
 
-        private function calculate_discounted_price(float $price, int $threshold, float $percentage): float {
+        private function calculate_discounted_price($price, $threshold, $percentage) {
             return $threshold > 0 && $percentage > 0 
                 ? $price - ($price * ($percentage / 100))
                 : $price;
         }
 
-        private function format_price(float $value): string {
+        private function format_price($value) {
             return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.');
         }
 
-        private function display_template_error(): void {
+        private function display_template_error() {
             echo '<p class="error">',
                 esc_html__('Calculator-templatebestand niet gevonden.', 'egaline'),
                 '</p>';
