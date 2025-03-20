@@ -5,27 +5,26 @@
  * @package Egaline
  */
 
-declare(strict_types=1);
-
 final class Egaline_Calculator_Metabox {
-    public function __construct(
-        private string $meta_key_enable = '_enable_calculator',
-        private string $meta_key_kg_per_bag = '_kg_per_bag',
-        private string $meta_key_kg_per_mm = '_kg_per_mm',
-        private string $meta_key_kg_per_m2 = '_kg_per_m2',
-        private string $meta_key_calculation_mode = '_calculation_mode',
-        private string $meta_key_discount_threshold = '_discount_threshold',
-        private string $meta_key_discount_percentage = '_discount_percentage',
-        private string $nonce_name = 'egaline_calculator_nonce',
-        private string $nonce_action = 'egaline_save_calculator_settings',
-        private string $plugin_path = __DIR__
-    ) {
+    private $meta_key_enable = '_enable_calculator';
+    private $meta_key_kg_per_bag = '_kg_per_bag';
+    private $meta_key_kg_per_mm = '_kg_per_mm';
+    private $meta_key_kg_per_m2 = '_kg_per_m2';
+    private $meta_key_calculation_mode = '_calculation_mode';
+    private $meta_key_discount_threshold = '_discount_threshold';
+    private $meta_key_discount_percentage = '_discount_percentage';
+    private $nonce_name = 'egaline_calculator_nonce';
+    private $nonce_action = 'egaline_save_calculator_settings';
+    private $plugin_path;
+
+    public function __construct($plugin_path = __DIR__) {
+        $this->plugin_path = $plugin_path;
         add_action('woocommerce_product_options_general_product_data', [$this, 'render_metabox_fields']);
         add_action('woocommerce_process_product_meta', [$this, 'persist_metabox_data']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
     }
 
-    public function enqueue_admin_scripts(): void {
+    public function enqueue_admin_scripts() {
         wp_enqueue_script(
             'egaline-calculator-metabox',
             plugin_dir_url($this->plugin_path) . '../assets/js/admin-calculator.js',
@@ -35,7 +34,7 @@ final class Egaline_Calculator_Metabox {
         );
     }
 
-    public function render_metabox_fields(): void {
+    public function render_metabox_fields() {
         global $post;
 
         $meta_values = [
@@ -51,7 +50,7 @@ final class Egaline_Calculator_Metabox {
         require_once "{$this->plugin_path}/../templates/metabox-calculator.php";
     }
 
-    public function persist_metabox_data(int $post_id): void {
+    public function persist_metabox_data($post_id) {
         if (!$this->is_valid_request()) return;
 
         $this->update_meta_field($post_id, $this->meta_key_enable, $_POST[$this->meta_key_enable] ?? 'no');
@@ -63,32 +62,29 @@ final class Egaline_Calculator_Metabox {
         $this->update_meta_field($post_id, $this->meta_key_discount_percentage, $_POST[$this->meta_key_discount_percentage] ?? '');
     }
 
-    private function is_valid_request(): bool {
+    private function is_valid_request() {
         return isset($_POST[$this->nonce_name]) 
             && wp_verify_nonce($_POST[$this->nonce_name], $this->nonce_action)
             && current_user_can('edit_post', get_the_ID());
     }
 
-    private function update_meta_field(int $post_id, string $meta_key, mixed $value): void {
-        $sanitized = match($meta_key) {
-            $this->meta_key_discount_threshold, 
-            $this->meta_key_kg_per_bag => $this->sanitize_int($value),
-            
-            $this->meta_key_discount_percentage,
-            $this->meta_key_kg_per_mm,
-            $this->meta_key_kg_per_m2 => $this->sanitize_float($value),
-            
-            default => sanitize_text_field((string) $value)
-        };
+    private function update_meta_field($post_id, $meta_key, $value) {
+        if ($meta_key === $this->meta_key_discount_threshold || $meta_key === $this->meta_key_kg_per_bag) {
+            $sanitized = $this->sanitize_int($value);
+        } elseif (in_array($meta_key, [$this->meta_key_discount_percentage, $this->meta_key_kg_per_mm, $this->meta_key_kg_per_m2])) {
+            $sanitized = $this->sanitize_float($value);
+        } else {
+            $sanitized = sanitize_text_field((string) $value);
+        }
 
         update_post_meta($post_id, $meta_key, $sanitized);
     }
 
-    private function sanitize_int(mixed $value): int {
+    private function sanitize_int($value) {
         return (int) filter_var($value, FILTER_SANITIZE_NUMBER_INT);
     }
 
-    private function sanitize_float(mixed $value): float {
+    private function sanitize_float($value) {
         return (float) filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
     }
 }
