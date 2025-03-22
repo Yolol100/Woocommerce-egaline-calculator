@@ -1,114 +1,341 @@
-/* 2025 Modern CSS - Optimalisatie met Behoud van Functionaliteit */
-@layer base, components, utilities;
-
 :root {
-  /* Moderne OKLCH kleuren */
-  --primary: oklch(51.01% 0.274 263.83);
-  --surface: oklch(98% 0.005 260);
-  --calculator-bg: oklch(98% 0.01 260 / 0.95);
-  --text: oklch(25% 0.05 260);
-  --border: oklch(85% 0.02 260 / 0.3);
-  
-  /* Dynamische eenheden */
-  --radius: max(0.5rem, 1cqw);
-  --flow-space: 1.5rem;
-  
-  /* Transities */
-  --transition: 200ms cubic-bezier(0.32, 0.72, 0.5, 1);
+  --primary-color: #2563eb;
+  --surface-color: #f8fafc;
+  --calculator-bg: #f9f9f9;
+  --result-bg: #fff;
+  --text-color: #1e293b;
+  --border-color: #e2e8f0;
+  --hover-bg: #f1f5f9;
+  --font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --transition-speed: 0.2s;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 5%);
+  --border-radius: clamp(6px, 0.5rem, 8px);
+  --input-border-radius: clamp(6px, 0.5rem, 8px);
+  --focus-shadow: 0 0 0 3px rgb(37 99 235 / 10%);
+  --input-padding: 0.75rem;
+  --label-font-size: 0.875rem;
+  --heading-font-size: 1.25rem;
+  --font-size-base: 1rem;
+  --font-size-small: 0.95rem;
+  --font-size-lg: 1.2rem;
+  --total-price-color: #0073aa;
+  --price-amount-color: #15427C;
 }
 
-@layer base {
-  *, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-  }
-
-  html {
-    font-family: 'Inter Variable', system-ui;
-    color-scheme: light dark;
-  }
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-@layer components {
-  .egaline-calculator {
-    container-type: inline-size;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: var(--flow-space);
-    background: var(--calculator-bg);
-    backdrop-filter: blur(8px);
-    margin-block-end: 2rem;
-
-    & h3 {
-      font-size: clamp(1.25rem, 5cqi, 1.5rem);
-      border-block-end: 2px solid var(--border);
-      margin-block-end: var(--flow-space);
-    }
-  }
-
-  .input-wrapper {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .qty-btn {
-    aspect-ratio: 1;
-    inline-size: 2.5rem;
-    border: 2px solid var(--border);
-    transition: var(--transition);
-    
-    &:where(:hover) {
-      transform: translateY(-2px);
-    }
-  }
-
-  .result-container {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
-  }
+/* ------------------------------------------------------------------------- */
+/* Egaline Calculator Container */
+/* ------------------------------------------------------------------------- */
+.egaline-calculator {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-block-end: 2rem;
+  background: var(--calculator-bg);
+  box-shadow: var(--shadow);
+  font-family: var(--font-family);
+  inline-size: clamp(300px, 100%, 500px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  text-align: start;
 }
 
-@layer utilities {
-  .adaptive-radius {
-    border-radius: var(--radius);
-  }
-  
-  .flow-space > * + * {
-    margin-block-start: var(--flow-space);
-  }
+/* Header in de calculator */
+.egaline-calculator h3 {
+  color: var(--text-color);
+  font-size: var(--heading-font-size);
+  font-weight: 600;
+  margin-block-end: 1.5rem;
+  padding-block-end: 0.75rem;
+  border-block-end: 2px solid var(--border-color);
+  text-align: start;
 }
 
-/* Dark Mode Automatisch */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --surface: oklch(15% 0.02 260);
-    --text: oklch(95% 0.01 260);
-  }
+/* Algemene elementen */
+.form-group {
+  margin-block-end: 1.25rem;
 }
 
-/* Container Responsive Design */
-@container (width < 400px) {
-  .input-wrapper {
-    grid-template-columns: 1fr;
-  }
-  
-  .qty-btn {
-    inline-size: 100%;
-    aspect-ratio: unset;
-  }
+label {
+  color: var(--text-color);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  margin-block-end: 0.5rem;
+  font-size: var(--label-font-size);
+  text-align: start;
 }
 
-/* Legacy Compatibiliteit */
+.styled-btw {
+  font-size: 14px;
+  color: black;
+}
+
+.input-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Knoppen */
+.qty-btn {
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border: 2px solid var(--border-color);
+  background-color: #fff;
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+
+.qty-btn:hover {
+  background-color: var(--hover-bg);
+  border-color: #cbd5e1;
+}
+
+.qty-btn:focus-visible {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: var(--focus-shadow);
+}
+
+/* Invoervelden */
 .egaline-input {
-  @extend .adaptive-radius;
-  padding: 0.75rem;
-  border: 2px solid var(--border);
+  flex: 1;
+  padding: var(--input-padding);
+  border: 2px solid var(--border-color);
+  border-radius: var(--input-border-radius);
+  background-color: #fff !important;
+  font-size: var(--font-size-base);
+  text-align: center;
+  color: var(--text-color);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  appearance: textfield;
 }
 
+.egaline-input::-webkit-outer-spin-button,
+.egaline-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.egaline-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: var(--focus-shadow);
+  outline: none;
+}
+
+/* Resultaatweergave */
+.result {
+  margin-block-start: 1rem;
+  padding: 15px;
+  background: var(--result-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  text-align: start;
+}
+
+.result-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.result-section {
+  flex: 1;
+}
+
+.result-section h4 {
+  margin-block-end: 0.5rem;
+  font-size: var(--font-size-base);
+  font-weight: bold;
+  color: var(--text-color);
+  text-align: start;
+}
+
+.result-section p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  text-align: start;
+}
+
+.result-section span {
+  font-weight: 600;
+  color: var(--price-amount-color);
+  font-size: var(--font-size-lg);
+  text-align: start;
+}
+
+/* Totaalprijs */
 .total-price {
-  @extend .flow-space;
-  border-block-start: 1px solid var(--border);
+  margin-block-start: 1.5rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--border-color);
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--total-price-color);
+  text-align: start;
+}
+
+.total-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-price-row h4 {
+  font-size: 17px;
+  font-weight: bold;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.total-price-row span {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--price-amount-color);
+}
+
+.total-price-note {
+  margin-block-start: 0.25rem;
+  text-align: end;
+}
+
+.total-price-note .incl-btw {
+  font-size: 0.875rem;
+  color: var(--text-color);
+  margin-block-end: 0;
+}
+
+/* Inputs Container */
+.inputs-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  text-align: start;
+}
+
+/* Kleine aanpassingen */
+.benodigde-hoeveelheid {
+  margin-block-start: -17px;
+}
+
+.total-price span,
+.discount-info {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--price-amount-color);
+  text-align: start;
+}
+
+.discount-info {
+  margin-block-start: 0.5rem;
+}
+
+/* Disabled state voor variabele producten */
+.calculator-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Waarschuwingstekst boven de calculator */
+.calculator-warning {
+  color: var(--text-color) !important;
+  font-weight: bold !important;
+  margin-block-end: 10px;
+  display: none;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Media Queries */
+/* ------------------------------------------------------------------------- */
+
+/* Tablets en grotere telefoons */
+@media (max-width: 768px) {
+  .egaline-calculator {
+    inline-size: 100%;
+    font-size: 16px;
+  }
+  .inputs-container {
+    flex-direction: row;
+  }
+  .form-group {
+    inline-size: 100%;
+    margin-block-end: 10px;
+  }
+  .result-container {
+    flex-direction: row;
+  }
+  .result-section {
+    text-align: start;
+  }
+  .total-price {
+    font-size: 18px;
+  }
+}
+
+/* Mobiele schermen */
+@media (max-width: 480px) {
+  .egaline-calculator {
+    inline-size: 100%;
+    min-inline-size: auto;
+  }
+  input,
+  button {
+    font-size: 16px; /* Voorkomt zoom op mobiel */
+  }
+  .result-container {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .qty-btn {
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+  }
+  .egaline-input {
+    padding: 0.5rem;
+  }
+  .benodigde-hoeveelheid {
+    margin-block-start: 0;
+  }
+  .egaline-calculator h3 {
+    font-size: 1.15rem;
+    margin-block-end: 1rem;
+  }
+  .form-group {
+    margin-block-end: 1rem;
+  }
+  .total-price-row h4 {
+    font-size: 16px;
+  }
+  .total-price-row span {
+    font-size: 1rem;
+  }
+  .result-section h4 {
+    font-size: 0.95rem;
+  }
+  .result-section p,
+  .result-section span {
+    font-size: 0.9rem;
+    text-align: start;
+  }
+  .inputs-container {
+    gap: 0;
+    flex-direction: column;
+  }
+  .result {
+    margin-block-start: 0.5rem;
+  }
 }
