@@ -18,13 +18,13 @@ jQuery(document).ready(($) => {
   const initializeCalculator = (calculator) => {
     // Cache de belangrijke DOM-elementen binnen de calculator voor later gebruik
     const $inputs = {
-      egalineMm: calculator.find(".egaline-mm"), // Invoer: dikte of aantal lagen in mm
-      egalineM2: calculator.find(".egaline-m2"), // Invoer: oppervlakte in m²
-      resultBags: calculator.find(".result-bags"), // Weergave: aantal benodigde zakken
-      resultKg: calculator.find(".result-kg"), // Weergave: totaal gewicht (kg)
-      totalPrice: calculator.find(".total-price span"), // Weergave: totaalprijs (kan korting bevatten)
+      egalineMm: calculator.find(".egaline-mm"),          // Invoer: dikte of aantal lagen in mm
+      egalineM2: calculator.find(".egaline-m2"),          // Invoer: oppervlakte in m²
+      resultBags: calculator.find(".result-bags"),        // Weergave: aantal benodigde zakken
+      resultKg: calculator.find(".result-kg"),            // Weergave: totaal gewicht (kg)
+      totalPrice: calculator.find(".total-price span"),   // Weergave: totaalprijs (kan korting bevatten)
       variationId: calculator.find(".calculator-variation-id"), // Verborgen veld: variatie-ID
-      qtyBtns: calculator.find(".qty-btn"), // Knoppen voor plus/minus bewerkingen
+      qtyBtns: calculator.find(".qty-btn"),               // Knoppen voor plus/minus bewerkingen
       labelEgalineMm: calculator.find(".egaline-mm-label"), // Label voor de mm-invoer
       labelEgalineM2: calculator.find(".egaline-m2-label"), // Label voor de m²-invoer
       labelResultBags: calculator.find(".result-bags-label"), // Label voor het aantal zakken
@@ -120,7 +120,7 @@ jQuery(document).ready(($) => {
           `Korting: ${discountPercentage}% (${discountedTotal.toFixed(2)}) EUR`
         );
       } else {
-        $inputs.totalPrice.text(multipliedOriginalTotal.toFixed(2) + " EUR");
+        $inputs.totalPrice.text(`${multipliedOriginalTotal.toFixed(2)} EUR`);
       }
 
       $inputs.resultKg.text(formatNumber(multipliedTotalKg));
@@ -130,9 +130,9 @@ jQuery(document).ready(($) => {
       updateLabel();
     };
 
-    // ---------------------------
+    // ---------------------------------------------------------------------------
     // FUNCTIES VOOR UIT-/INSCHAKELEN VAN DE CALCULATOR (voor variabele producten)
-    // ---------------------------
+    // ---------------------------------------------------------------------------
     const disableCalculator = () => {
       calculator.addClass("calculator-disabled");
       $inputs.egalineMm.prop("disabled", true).css("opacity", "0.5");
@@ -150,7 +150,7 @@ jQuery(document).ready(($) => {
     };
 
     // Controleer bij initialisatie of het een variabel product betreft zonder geselecteerde variatie.
-    const productType = calculator.data("product-type"); // Dit attribuut dient in PHP toegevoegd te worden.
+    const productType = calculator.data("product-type");
     if (productType === "variable" && !$inputs.variationId.val()) {
       disableCalculator();
     }
@@ -163,14 +163,16 @@ jQuery(document).ready(($) => {
           enableCalculator();
           $calc.find(".calculator-variation-id").val(variation.variation_id);
           // Reset de invoervelden en update de resultaten bij variatiewijziging.
-          $calc.find(".egaline-mm, .egaline-m2, .result-bags").val(0).trigger("change");
+          $calc.find(".egaline-mm, .egaline-m2, .result-bags")
+            .val(0)
+            .trigger("change");
           $calc.find(".result-kg").text("0");
           $calc.find(".total-price span").text("0 EUR");
         }
       });
       // Verberg de waarschuwing als er een variatie is gekozen
       $(".calculator-warning").hide();
-      console.log("Nieuwe variatie geselecteerd: " + variation.variation_id);
+      console.log(`Nieuwe variatie geselecteerd: ${variation.variation_id}`);
     });
 
     // Extra waarschuwing: als de gebruiker focust op een invoerveld terwijl de calculator nog is uitgeschakeld,
@@ -229,13 +231,10 @@ jQuery(document).ready(($) => {
       if (!validateFields()) return false;
     });
 
-    // ---------------------------
+    // ---------------------------------------------------------------------------
     // EVENT-HANDLERS VOOR DE INVOERVELDEN
-    // ---------------------------
-
+    // ---------------------------------------------------------------------------
     // Wanneer de gebruiker de dikte (of aantal lagen) wijzigt:
-    // - Als de oppervlakte en het aantal zakken nog 0 zijn, stel dan een startwaarde (bijv. 1 m²) in.
-    // - Anders wordt de oppervlakte herberekend op basis van de huidige waarde van Aantal zakken.
     $inputs.egalineMm.on("input change", () => {
       lastEdited = "mm";
       const thickness = parseFloat($inputs.egalineMm.val()) || 0;
@@ -243,11 +242,11 @@ jQuery(document).ready(($) => {
       let sacksVal = parseInt($inputs.resultBags.val(), 10) || 0;
       if (thickness > 0) {
         if (areaVal <= 0 && sacksVal <= 0) {
-          // Als beide nog 0 zijn, gebruik een standaard startwaarde
+          // Gebruik een standaard startwaarde als oppervlakte en zakken nog 0 zijn
           areaVal = 1;
           $inputs.egalineM2.val("1").trigger("change");
         } else {
-          // Anders: recalc de oppervlakte zodat de huidige hoeveelheid zakken behouden blijft
+          // Herbereken de oppervlakte zodat de huidige hoeveelheid zakken behouden blijft
           const newM2 = (sacksVal * BAG_WEIGHT) / (thickness * KG_PER_MM + KG_PER_M2);
           $inputs.egalineM2.val(parseFloat(newM2.toFixed(2)).toString()).trigger("change");
         }
@@ -261,7 +260,7 @@ jQuery(document).ready(($) => {
       updateResults();
     });
 
-    // Wanneer de gebruiker het aantal zakken wijzigt, herbereken de oppervlakte (zodat deze consistent is met de huidige dikte)
+    // Wanneer de gebruiker het aantal zakken wijzigt, herbereken de oppervlakte.
     $inputs.resultBags.on("input change", () => {
       lastEdited = "sacks";
       const val = parseInt($inputs.resultBags.val(), 10) || 0;
@@ -286,7 +285,7 @@ jQuery(document).ready(($) => {
       $input.val(step < 1 ? parseFloat(newVal.toFixed(1)).toString() : Math.round(newVal)).trigger("input");
     });
 
-    // Bind ook een change-event op de producthoeveelheid zodat de calculator direct herberekent wanneer dit verandert
+    // Bind een change-event op de producthoeveelheid zodat de calculator herberekent wanneer dit verandert
     calculator.closest("form.cart").find("input.qty").on("change", () => {
       updateResults();
     });
@@ -399,15 +398,10 @@ jQuery(document).ready(($) => {
           const tempDiv = document.createElement("div");
           tempDiv.innerHTML = defaultVariation.price_html;
           let cleanPrice = tempDiv.querySelector(".woocommerce-Price-amount");
-          cleanPrice = cleanPrice
-            ? cleanPrice.textContent.trim()
-            : defaultVariation.price_html;
+          cleanPrice = cleanPrice ? cleanPrice.textContent.trim() : defaultVariation.price_html;
           $(".egaline-calculator").each(function () {
             $(this).data("variation-price", defaultVariation.display_price);
-            $(this)
-              .find(".calc-variation-price")
-              .html(`(${cleanPrice})`)
-              .show();
+            $(this).find(".calc-variation-price").html(`(${cleanPrice})`).show();
           });
         }
       }
@@ -418,24 +412,21 @@ jQuery(document).ready(($) => {
         const tempDiv = document.createElement("div");
         tempDiv.innerHTML = variation.price_html;
         let cleanPrice = tempDiv.querySelector(".woocommerce-Price-amount");
-        cleanPrice = cleanPrice
-          ? cleanPrice.textContent.trim()
-          : variation.price_html;
+        cleanPrice = cleanPrice ? cleanPrice.textContent.trim() : variation.price_html;
         $(".egaline-calculator").each(function () {
           $(this).data("variation-price", variation.display_price);
-          $(this)
-            .find(".calc-variation-price")
-            .html(`(${cleanPrice})`)
-            .show();
+          $(this).find(".calc-variation-price").html(`(${cleanPrice})`).show();
           $(this).find(".calculator-variation-id").val(variation.variation_id);
           $(this).removeClass("calculator-disabled");
-          $(this).find(".egaline-mm, .egaline-m2, .result-bags").val(0).trigger("change");
+          $(this).find(".egaline-mm, .egaline-m2, .result-bags")
+            .val(0)
+            .trigger("change");
           $(this).find(".result-kg").text("0");
           $(this).find(".total-price span").text("0 EUR");
         });
         // Verberg de waarschuwing zodra er een variatie is gekozen
         $(".calculator-warning").hide();
-        console.log("Nieuwe variatie geselecteerd: " + variation.variation_id);
+        console.log(`Nieuwe variatie geselecteerd: ${variation.variation_id}`);
       }
     });
   }
@@ -473,6 +464,9 @@ jQuery(document).ready(($) => {
   });
 });
 
+// ---------------------------------------------------------------------------
+// Local Storage voor Calculator Data
+// ---------------------------------------------------------------------------
 const calculatorStorageKey = "egaline_calculator_data";
 
 const saveCalculatorData = () => {
