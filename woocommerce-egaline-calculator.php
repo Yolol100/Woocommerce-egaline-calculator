@@ -16,6 +16,17 @@
 
 declare(strict_types=1);
 
+namespace Webactueel\EgalineCalculator;
+
+use function add_action;
+use function is_product;
+use function is_readable;
+use function plugin_dir_path;
+use function plugin_dir_url;
+use function sanitize_key;
+use function wp_enqueue_script;
+use function wp_enqueue_style;
+
 defined('ABSPATH') || exit;
 
 final class Egaline_Calculator_Init
