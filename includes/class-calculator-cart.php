@@ -56,6 +56,9 @@ readonly final class Egaline_Calculator_Cart
 
         $needed_kg = ($thickness * $area * $kg_per_mm) + ($area * $kg_per_m2);
         $bags = (int) ceil($needed_kg / $kg_per_bag);
+        $quantity = isset($_POST['quantity'])
+            ? max(1, (int) sanitize_text_field((string) $_POST['quantity']))
+            : 1;
 
         $product = wc_get_product($product_id);
         $regular_price = (float) $product->get_price();
@@ -70,13 +73,16 @@ readonly final class Egaline_Calculator_Cart
         $original_total = $bags * $regular_price;
         $discount_threshold = (int) get_post_meta($product_id, '_discount_threshold', true);
         $discount_percentage = (float) get_post_meta($product_id, '_discount_percentage', true);
-        $discount_amount = 0.0;
-        $final_total = $original_total;
+        $discount_amount_total = 0.0;
+        $final_total_total = $original_total * $quantity;
 
-        if ($bags >= $discount_threshold && $discount_percentage > 0.0) {
-            $discount_amount = $original_total * ($discount_percentage / 100);
-            $final_total = $original_total - $discount_amount;
+        if (($bags * $quantity) >= $discount_threshold && $discount_percentage > 0.0) {
+            $discount_amount_total = $final_total_total * ($discount_percentage / 100);
+            $final_total_total -= $discount_amount_total;
         }
+
+        $final_total = $final_total_total / $quantity;
+        $discount_amount = $discount_amount_total / $quantity;
 
         $cart_item_data['calculator_data'] = [
             'needed_kg' => $needed_kg,
