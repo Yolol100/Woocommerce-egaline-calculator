@@ -41,7 +41,7 @@ jQuery(document).ready(($) => {
     const KG_PER_MM = parseFloat(calculator.data("kg-per-mm")) || 0;
     const KG_PER_M2 = parseFloat(calculator.data("kg-per-m2")) || 0;
     const BAG_WEIGHT = parseFloat(calculator.data("kg-per-bag")) || config.defaultKgPerBag;
-    const calculationMode = calculator.data("calculation-mode") || "kg_per_mm";
+    const calculationMode = "kg_per_mm";
 
     const discountThreshold = parseInt(calculator.data("discount-threshold"), 10) || 0;
     const discountPercentage = parseFloat(calculator.data("discount-percentage")) || 0;
@@ -53,9 +53,7 @@ jQuery(document).ready(($) => {
 
     // Update labels volgens rekenmodus
     const updateLabel = () => {
-      $inputs.labelEgalineMm.text(
-        calculationMode === "kg_per_mm" ? "Hoe dik egaliseren in mm?" : "Aantal lagen in mm?"
-      );
+      $inputs.labelEgalineMm.text("Hoe dik egaliseren in mm?");
       $inputs.labelEgalineM2.text("Aantal m² egaliseren?");
       $inputs.labelResultBags.text(`Aantal zakken (${BAG_WEIGHT}kg)`);
     };
