@@ -48,8 +48,6 @@ A powerful and highly customizable WooCommerce extension that adds an intelligen
 - **Optimized Performance**: Minimal impact on page load times
 - **Error Handling**: Graceful error handling with user-friendly messages
 
----
-
 ## 🔧 Requirements
 
 | Component | Minimum Version | Recommended |
@@ -64,8 +62,6 @@ A powerful and highly customizable WooCommerce extension that adds an intelligen
 - Max Execution Time: 30 seconds minimum
 - cURL support enabled
 - JSON support enabled
-
----
 
 ## 📦 Installation
 
