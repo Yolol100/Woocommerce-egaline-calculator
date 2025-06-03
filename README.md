@@ -39,6 +39,7 @@ A powerful and highly customizable WooCommerce extension that adds an intelligen
 ### 🎯 **Optimized User Experience**
 - **Input Validation**: Robust validation ensuring only valid numerical inputs
 - **LocalStorage Persistence**: Calculator values retained across page refreshes
+- **Dark Mode & Reset**: Toggleable dark theme and one-click reset button
 - **Responsive Design**: Mobile-friendly interface that works on all devices
 - **Loading States**: Clear loading indicators during AJAX operations
 
@@ -83,3 +84,6 @@ A powerful and highly customizable WooCommerce extension that adds an intelligen
 ```bash
 cd /path/to/wordpress/wp-content/plugins/
 git clone https://github.com/yolol100/egaline-calculator.git
+cd egaline-calculator
+```
+Activate the plugin from the WordPress admin.
