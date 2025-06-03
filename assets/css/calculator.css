@@ -446,8 +446,40 @@ label {
       text-align: start;
     }
     
-    .result {
+  .result {
       margin-block-start: 0.5rem;
     }
   }
+}
+
+/* ------------------------------------------------------------------------- */
+/* Calculator actions                                                        */
+/* ------------------------------------------------------------------------- */
+.calculator-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: 1rem;
+}
+
+.calculator-actions button {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: #fff;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.calculator-actions button:hover {
+  background-color: var(--hover-bg);
+}
+
+.egaline-calculator.dark-mode {
+  --calculator-bg: #1e293b;
+  --result-bg: #334155;
+  --text-color: #f1f5f9;
+  --border-color: #475569;
+  --hover-bg: #475569;
+  color-scheme: dark;
 }

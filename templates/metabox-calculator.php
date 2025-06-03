@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
     <!-- Activeer Egaline Calculator -->
     <div class="form-field">
         <label for="enable_calculator" class="form-label">
-            <?php esc_html_e('Activeer Egaline Calculator', 'egaline'); ?>
+            <?php esc_html_e('Activeer Egaline Calculator', 'egaline-calculator'); ?>
         </label>
         <input
             type="checkbox"
@@ -28,7 +28,7 @@ if (!defined('ABSPATH')) {
     <!-- Rekenmethode -->
     <div class="form-field">
         <label for="calculation_mode" class="form-label">
-            <?php esc_html_e('Rekenmethode', 'egaline'); ?>
+            <?php esc_html_e('Rekenmethode', 'egaline-calculator'); ?>
         </label>
         <select 
             id="calculation_mode" 
@@ -37,14 +37,14 @@ if (!defined('ABSPATH')) {
             aria-describedby="calculation_mode-help"
         >
             <option value="kg_per_mm" <?php selected($meta_values['calculation_mode'], 'kg_per_mm'); ?>>
-                <?php esc_html_e('Kg per mm', 'egaline'); ?>
+                <?php esc_html_e('Kg per mm', 'egaline-calculator'); ?>
             </option>
             <option value="layers_per_mm" <?php selected($meta_values['calculation_mode'], 'layers_per_mm'); ?>>
-                <?php esc_html_e('Lagen per mm', 'egaline'); ?>
+                <?php esc_html_e('Lagen per mm', 'egaline-calculator'); ?>
             </option>
         </select>
         <div id="calculation_mode-help" class="form-description">
-            <?php esc_html_e('Kies de eenheid voor de rekensom.', 'egaline'); ?>
+            <?php esc_html_e('Kies de eenheid voor de rekensom.', 'egaline-calculator'); ?>
         </div>
     </div>
 
@@ -52,8 +52,8 @@ if (!defined('ABSPATH')) {
     <div class="form-field">
         <label for="kg_per_mm" id="label_kg_per_mm" class="form-label">
             <?php echo ($meta_values['calculation_mode'] === 'kg_per_mm')
-                ? esc_html__('Kg per mm', 'egaline')
-                : esc_html__('Lagen per mm', 'egaline'); ?>:
+                ? esc_html__('Kg per mm', 'egaline-calculator')
+                : esc_html__('Lagen per mm', 'egaline-calculator'); ?>:
         </label>
         <input
             type="number"
@@ -63,14 +63,14 @@ if (!defined('ABSPATH')) {
             step="0.01"
             min="0"
             class="form-input"
-            aria-label="<?php esc_attr_e('Voer de waarde in voor kg per mm of lagen per mm', 'egaline'); ?>"
+            aria-label="<?php esc_attr_e('Voer de waarde in voor kg per mm of lagen per mm', 'egaline-calculator'); ?>"
         />
     </div>
 
     <!-- Kg per zak -->
     <div class="form-field">
         <label for="kg_per_bag" class="form-label">
-            <?php esc_html_e('Kg per zak', 'egaline'); ?>
+            <?php esc_html_e('Kg per zak', 'egaline-calculator'); ?>
         </label>
         <input
             type="number"
@@ -80,14 +80,14 @@ if (!defined('ABSPATH')) {
             step="0.1"
             min="1"
             class="form-input"
-            aria-label="<?php esc_attr_e('Aantal kg per zak', 'egaline'); ?>"
+            aria-label="<?php esc_attr_e('Aantal kg per zak', 'egaline-calculator'); ?>"
         />
     </div>
 
     <!-- Kg per m² -->
     <div class="form-field">
         <label for="kg_per_m2" class="form-label">
-            <?php esc_html_e('Kg per m²', 'egaline'); ?>
+            <?php esc_html_e('Kg per m²', 'egaline-calculator'); ?>
         </label>
         <input
             type="number"
@@ -97,14 +97,14 @@ if (!defined('ABSPATH')) {
             step="0.01"
             min="0"
             class="form-input"
-            aria-label="<?php esc_attr_e('Aantal kg per vierkante meter', 'egaline'); ?>"
+            aria-label="<?php esc_attr_e('Aantal kg per vierkante meter', 'egaline-calculator'); ?>"
         />
     </div>
 
     <!-- Aantal zakken voor korting -->
     <div class="form-field">
         <label for="discount_threshold" class="form-label">
-            <?php esc_html_e('Aantal zakken voor korting', 'egaline'); ?>
+            <?php esc_html_e('Aantal zakken voor korting', 'egaline-calculator'); ?>
         </label>
         <input
             type="number"
@@ -114,14 +114,14 @@ if (!defined('ABSPATH')) {
             step="1"
             min="1"
             class="form-input"
-            aria-label="<?php esc_attr_e('Minimaal aantal zakken voor korting', 'egaline'); ?>"
+            aria-label="<?php esc_attr_e('Minimaal aantal zakken voor korting', 'egaline-calculator'); ?>"
         />
     </div>
 
     <!-- Kortingspercentage -->
     <div class="form-field">
         <label for="discount_percentage" class="form-label">
-            <?php esc_html_e('Kortingspercentage (%)', 'egaline'); ?>
+            <?php esc_html_e('Kortingspercentage (%)', 'egaline-calculator'); ?>
         </label>
         <input
             type="number"
@@ -132,7 +132,7 @@ if (!defined('ABSPATH')) {
             min="0"
             max="100"
             class="form-input"
-            aria-label="<?php esc_attr_e('Kortingspercentage voor bulkbestellingen', 'egaline'); ?>"
+            aria-label="<?php esc_attr_e('Kortingspercentage voor bulkbestellingen', 'egaline-calculator'); ?>"
         />
     </div>
 
