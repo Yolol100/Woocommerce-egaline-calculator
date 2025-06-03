@@ -48,6 +48,7 @@ A powerful and highly customizable WooCommerce extension that adds an intelligen
 - **Input Sanitization**: Comprehensive security measures against malicious input
 - **Optimized Performance**: Minimal impact on page load times
 - **Error Handling**: Graceful error handling with user-friendly messages
+- **Translation Ready**: Loads `.mo` and `.po` files from the `languages` directory
 
 ## 🔧 Requirements
 
