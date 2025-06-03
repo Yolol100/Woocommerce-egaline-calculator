@@ -141,5 +141,6 @@ $calculation_mode ??= 'kg_per_mm';
                 <?= esc_html__('Dark Mode', 'egaline-calculator') ?>
             </button>
         </div>
+        <p class="calc-error" style="display:none"></p>
     </div>
 </form>

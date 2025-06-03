@@ -14,7 +14,6 @@ use function current_user_can;
 use function filter_var;
 use function filemtime;
 use function get_post_meta;
-use function in_array;
 use function plugin_dir_path;
 use function plugin_dir_url;
 use function sanitize_text_field;
@@ -39,7 +38,6 @@ final readonly class EgalineCalculatorMetabox
         'name'   => 'egaline_calculator_nonce',
         'action' => 'egaline_save_calculator_settings',
     ];
-
 
     public function __construct()
     {
@@ -67,11 +65,7 @@ final readonly class EgalineCalculatorMetabox
             'kg_per_bag'          => $this->getMetaValue($post->ID, self::META_KEYS['kg_bag'], 1.0),
             'kg_per_mm'           => $this->getMetaValue($post->ID, self::META_KEYS['kg_mm']),
             'kg_per_m2'           => $this->getMetaValue($post->ID, self::META_KEYS['kg_m2']),
-            'calculation_mode'    => $this->getMetaValue(
-                $post->ID,
-                self::META_KEYS['mode'],
-                'kg_per_mm'
-            ),
+            'calculation_mode'    => $this->getMetaValue($post->ID, self::META_KEYS['mode'], 'kg_per_mm'),
             'discount_threshold'  => $this->getMetaValue($post->ID, self::META_KEYS['discount_threshold']),
             'discount_percentage' => $this->getMetaValue($post->ID, self::META_KEYS['discount_percentage']),
         ];
@@ -86,11 +80,7 @@ final readonly class EgalineCalculatorMetabox
         }
 
         foreach (self::META_KEYS as $key => $metaKey) {
-            $value = $_POST[$metaKey] ?? match ($metaKey) {
-                self::META_KEYS['enable'] => 'no',
-                default => '',
-            };
-
+            $value = $_POST[$metaKey] ?? ($metaKey === self::META_KEYS['enable'] ? 'no' : '');
             $this->updateMetaField($postId, $metaKey, $value);
         }
     }

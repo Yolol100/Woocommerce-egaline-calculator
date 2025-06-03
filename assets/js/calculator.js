@@ -1,8 +1,21 @@
 "use strict";
 
+const { __ } = wp.i18n;
+
 jQuery(document).ready(($) => {
   const config = {
     defaultKgPerBag: 15, // Standaard gewicht per zak (kg)
+  };
+
+  const showCalcError = (calculator, message) => {
+    let $msg = calculator.find(".calc-error");
+    if (!$msg.length) {
+      $msg = $('<p class="calc-error" role="alert"></p>').prependTo(calculator);
+    }
+    $msg.text(message).show();
+    setTimeout(() => {
+      $msg.fadeOut();
+    }, 5000);
   };
 
   /**
@@ -145,7 +158,10 @@ jQuery(document).ready(($) => {
     // Waarschuwing bij focus als calculator uitgeschakeld is
     const warnIfDisabled = function () {
       if (productType === "variable" && !$inputs.variationId.val()) {
-        alert("Kies eerst een variatie voordat u de calculator gebruikt.");
+        showCalcError(
+          calculator,
+          __("Kies eerst een variatie voordat u de calculator gebruikt.", "egaline-calculator")
+        );
         $(this).blur();
         return false;
       }
@@ -184,7 +200,10 @@ jQuery(document).ready(($) => {
         }
       });
       if (!isValid) {
-        alert("Vul alle velden in voordat u verder gaat!");
+        showCalcError(
+          calculator,
+          __("Vul alle velden in voordat u verder gaat!", "egaline-calculator")
+        );
       }
       return isValid;
     };
@@ -297,7 +316,13 @@ jQuery(document).ready(($) => {
         if (thickness <= 0) $calculator.find(".egaline-mm").css("border", "1px solid red");
         if (area <= 0) $calculator.find(".egaline-m2").css("border", "1px solid red");
         if (bags <= 0) $calculator.find(".result-bags").css("border", "1px solid red");
-        alert("Vul alle vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen.");
+        showCalcError(
+          $calculator,
+          __(
+            "Vul alle vereiste gegevens in de calculator in voordat u het product toevoegt aan de winkelwagen.",
+            "egaline-calculator"
+          )
+        );
         isValid = false;
       } else {
         $calculator.find(".egaline-mm, .egaline-m2, .result-bags").css("border", "");

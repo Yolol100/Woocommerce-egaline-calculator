@@ -130,11 +130,13 @@ final readonly class EgalineCalculatorInit
             return;
         }
 
-        $this->enqueueScript(
+        $handle = $this->enqueueScript(
             relativePath: 'assets/js/calculator.js',
-            dependencies: ['jquery'],
+            dependencies: ['jquery', 'wp-i18n'],
             inFooter: true
         );
+
+        wp_set_script_translations($handle, self::TEXT_DOMAIN, $this->pluginPath . 'languages');
         
         $this->enqueueStyle('assets/css/calculator.css');
     }
@@ -145,28 +147,32 @@ final readonly class EgalineCalculatorInit
      * @param string $relativePath Path relative to plugin directory
      * @param array $dependencies Script dependencies
      * @param bool $inFooter Whether to load in footer
-     * @return void
+     * @return string Script handle
      */
     private function enqueueScript(
         string $relativePath,
         array $dependencies = [],
         bool $inFooter = false
-    ): void {
+    ): string {
         $filePath = $this->pluginPath . $relativePath;
         $fileUrl = $this->pluginUrl . $relativePath;
 
         if (!file_exists($filePath)) {
             $this->logError("JS-bestand ontbreekt: {$filePath}");
-            return;
+            return '';
         }
 
+        $handle = $this->generateAssetHandle($relativePath);
+
         wp_enqueue_script(
-            $this->generateAssetHandle($relativePath),
+            $handle,
             $fileUrl,
             $dependencies,
             (string) filemtime($filePath),
             $inFooter
         );
+
+        return $handle;
     }
 
     /**
