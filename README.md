@@ -7,12 +7,6 @@
 
 A powerful and highly customizable WooCommerce extension that adds an intelligent material calculator to product pages. Enable customers to calculate precise material quantities (kg per m², kg per mm) with real-time price updates and seamless cart integration.
 
-## 📋 Table of Contents
-
-- [✨ Features](#-features)
-- [🔧 Requirements](#-requirements)
-- [📦 Installation](#-installation)
-
 ## ✨ Features
 
 ### 🧮 **Advanced Material Calculator**
