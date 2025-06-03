@@ -40,8 +40,9 @@ final readonly class EgalineCalculatorMetabox
     ];
 
     private const CALCULATION_MODES = [
-        'PER_MM' => 'kg_per_mm',
-        'PER_M2' => 'kg_per_m2',
+        'PER_MM'       => 'kg_per_mm',
+        'PER_M2'       => 'kg_per_m2',
+        'LAYERS_PER_MM' => 'layers_per_mm',
     ];
 
     public function __construct()
@@ -49,6 +50,7 @@ final readonly class EgalineCalculatorMetabox
         add_action('woocommerce_product_options_general_product_data', $this->renderMetaboxFields(...));
         add_action('woocommerce_process_product_meta', $this->persistMetaboxData(...));
         add_action('admin_enqueue_scripts', $this->enqueueAdminScripts(...));
+        add_action('admin_enqueue_scripts', $this->enqueueAdminStyles(...));
     }
 
     public function enqueueAdminScripts(): void
@@ -59,6 +61,16 @@ final readonly class EgalineCalculatorMetabox
             ['jquery'],
             (string) filemtime(plugin_dir_path(__FILE__) . '../assets/js/admin-calculator.js'),
             true
+        );
+    }
+
+    public function enqueueAdminStyles(): void
+    {
+        wp_enqueue_style(
+            'egaline-calculator-metabox',
+            plugin_dir_url(__FILE__) . '../assets/css/admin-calculator.css',
+            [],
+            (string) filemtime(plugin_dir_path(__FILE__) . '../assets/css/admin-calculator.css')
         );
     }
 
