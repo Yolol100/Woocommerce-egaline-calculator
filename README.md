@@ -14,9 +14,6 @@ A powerful and highly customizable WooCommerce extension that adds an intelligen
 - [✨ Features](#-features)
 - [🔧 Requirements](#-requirements)
 - [📦 Installation](#-installation)
-- [⚙️ Configuration](#️-configuration)
-- [🎯 Usage](#-usage)
-
 ---
 
 ## ✨ Features
