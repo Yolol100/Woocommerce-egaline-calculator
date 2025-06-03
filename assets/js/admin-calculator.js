@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const labelKgPerMm = document.querySelector("#label_kg_per_mm");
   
   if (!modeSelect || !labelKgPerMm) {
-    console.warn("Elementen #calculation_mode of #label_kg_per_mm niet gevonden in de DOM.");
     return;
   }
   

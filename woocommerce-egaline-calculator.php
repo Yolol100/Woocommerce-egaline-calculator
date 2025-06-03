@@ -116,7 +116,22 @@ final readonly class EgalineCalculatorInit
     private function registerHooks(): void
     {
         add_action('wp_enqueue_scripts', $this->enqueueAssets(...));
+        add_action('plugins_loaded', $this->loadTextdomain(...));
         add_action('plugins_loaded', $this->checkDependencies(...));
+    }
+
+    /**
+     * Load plugin translation files
+     *
+     * @return void
+     */
+    public function loadTextdomain(): void
+    {
+        load_plugin_textdomain(
+            self::TEXT_DOMAIN,
+            false,
+            dirname(plugin_basename(__FILE__)) . '/languages'
+        );
     }
 
     /**

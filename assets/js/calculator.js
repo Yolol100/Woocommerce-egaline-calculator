@@ -142,7 +142,6 @@ jQuery(document).ready(($) => {
         }
       });
       $(".calculator-warning").hide();
-      console.log(`Nieuwe variatie geselecteerd: ${variation.variation_id}`);
     });
 
     // Waarschuwing bij focus als calculator uitgeschakeld is
@@ -192,9 +191,6 @@ jQuery(document).ready(($) => {
       return isValid;
     };
 
-    $("#calculate_button").on("click", () => {
-      if (!validateFields()) return false;
-    });
 
     // Event handlers voor invoervelden
     $inputs.egalineMm.on("input change", () => {
@@ -252,7 +248,16 @@ jQuery(document).ready(($) => {
     calculator.on("resetCalculator", function () {
       initializeDefaults();
       updateResults();
-      console.log("Calculator gereset via resetCalculator event.");
+    });
+
+    calculator.find(".calculator-reset").on("click", () => {
+      calculator.trigger("resetCalculator");
+    });
+
+    calculator.find(".toggle-dark-mode").on("click", () => {
+      calculator.toggleClass("dark-mode");
+      const isDark = calculator.hasClass("dark-mode");
+      localStorage.setItem(darkModeStorageKey, isDark ? "1" : "0");
     });
 
     updateLabel();
@@ -266,7 +271,6 @@ jQuery(document).ready(($) => {
       if ($(this).data("calculator-initialized")) return;
       $(this).data("calculator-initialized", true);
       initializeCalculator($(this));
-      console.log("Calculator instance initialized:", $(this));
     });
   };
 
@@ -371,7 +375,6 @@ jQuery(document).ready(($) => {
           $(this).find(".total-price span").text("0 EUR");
         });
         $(".calculator-warning").hide();
-        console.log(`Nieuwe variatie geselecteerd: ${variation.variation_id}`);
       }
     });
   }
@@ -395,7 +398,6 @@ jQuery(document).ready(($) => {
   $variationsForm.on("reset_data", () => {
     $(".egaline-calculator").each(function () {
       $(this).trigger("resetCalculator");
-      console.log("Calculator gereset na variatie-wissen.");
     });
     $(".calculator-warning").show();
   });
@@ -403,6 +405,7 @@ jQuery(document).ready(($) => {
 
 // LocalStorage voor calculator data
 const calculatorStorageKey = "egaline_calculator_data";
+const darkModeStorageKey = "egaline_calculator_dark";
 
 const saveCalculatorData = () => {
   const calculatorData = {
@@ -411,6 +414,8 @@ const saveCalculatorData = () => {
     bags: $(".result-bags").val(),
   };
   localStorage.setItem(calculatorStorageKey, JSON.stringify(calculatorData));
+  const isDark = $(".egaline-calculator").first().hasClass("dark-mode");
+  localStorage.setItem(darkModeStorageKey, isDark ? "1" : "0");
 };
 
 const loadCalculatorData = () => {
@@ -420,6 +425,9 @@ const loadCalculatorData = () => {
     $(".egaline-mm").val(mm).trigger("change");
     $(".egaline-m2").val(m2).trigger("change");
     $(".result-bags").val(bags).trigger("change");
+  }
+  if (localStorage.getItem(darkModeStorageKey) === "1") {
+    $(".egaline-calculator").addClass("dark-mode");
   }
 };
 

@@ -66,7 +66,7 @@ final readonly class EgalineCalculatorMetabox
     {
         global $post;
 
-        $metaValues = [
+        $meta_values = [
             'enable_calculator'   => $this->getMetaValue($post->ID, self::META_KEYS['enable']),
             'kg_per_bag'          => $this->getMetaValue($post->ID, self::META_KEYS['kg_bag'], 1.0),
             'kg_per_mm'           => $this->getMetaValue($post->ID, self::META_KEYS['kg_mm']),
