@@ -80,6 +80,18 @@ A powerful and highly customizable WooCommerce extension that adds an intelligen
 5. Find "Egaline Calculator" and click **Activate**
 
 ### Method 3: Git Installation (Developers)
+
+1. Clone this repository into your `wp-content/plugins` directory:
+
 ```bash
+
 cd /path/to/wordpress/wp-content/plugins/
+
 git clone https://github.com/yolol100/egaline-calculator.git
+
+```
+
+2. Navigate to `Plugins` in WordPress admin
+
+3. Find "Egaline Calculator" and click **Activate**
+
