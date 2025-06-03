@@ -20,6 +20,7 @@ use function plugin_dir_url;
 use function sanitize_text_field;
 use function update_post_meta;
 use function wp_enqueue_script;
+use function wp_enqueue_style;
 use function wp_verify_nonce;
 
 final readonly class EgalineCalculatorMetabox
@@ -44,6 +45,17 @@ final readonly class EgalineCalculatorMetabox
     {
         add_action('woocommerce_product_options_general_product_data', $this->renderMetaboxFields(...));
         add_action('woocommerce_process_product_meta', $this->persistMetaboxData(...));
+        add_action('admin_enqueue_scripts', $this->enqueueAdminAssets(...));
+    }
+
+    public function enqueueAdminAssets(): void
+    {
+        wp_enqueue_style(
+            'egaline-calculator-admin',
+            plugin_dir_url(__FILE__) . '../assets/css/admin-metabox.css',
+            [],
+            (string) filemtime(plugin_dir_path(__FILE__) . '../assets/css/admin-metabox.css')
+        );
     }
 
     public function renderMetaboxFields(): void
