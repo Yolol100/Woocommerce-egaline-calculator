@@ -45,8 +45,6 @@ msgstr "Calculate the number of bags"
 msgid "Hoe dik egaliseren in mm?"
 msgstr "How thick is the leveling in mm?"
 
-msgid "Aantal lagen in mm"
-msgstr "Number of layers in mm"
 
 msgid "Aantal m² egaliseren?"
 msgstr "Area to level in m²?"
@@ -75,8 +73,6 @@ msgstr "Calculation method"
 msgid "Kg per mm"
 msgstr "Kg per mm"
 
-msgid "Lagen per mm"
-msgstr "Layers per mm"
 
 msgid "Kg per zak"
 msgstr "Kg per bag"
