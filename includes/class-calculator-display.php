@@ -87,7 +87,7 @@ if (!class_exists('Egaline_Calculator_Display')) {
 
         private function display_error_message(): void
         {
-            esc_html_e('Calculator kan niet worden weergegeven vanwege ontbrekende productinstellingen.', 'egaline');
+            esc_html_e('Calculator kan niet worden weergegeven vanwege ontbrekende productinstellingen.', 'egaline-calculator');
         }
 
         private function load_template(array $metadata): void
@@ -95,7 +95,7 @@ if (!class_exists('Egaline_Calculator_Display')) {
             $template_path = plugin_dir_path(__FILE__) . '../templates/calculator-display.php';
 
             if (!file_exists($template_path)) {
-                esc_html_e('Calculator-templatebestand niet gevonden.', 'egaline');
+                esc_html_e('Calculator-templatebestand niet gevonden.', 'egaline-calculator');
                 return;
             }
 

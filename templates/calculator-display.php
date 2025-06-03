@@ -26,7 +26,7 @@ $calculation_mode ??= 'kg_per_mm';
 
 <?php if ($isVariableProduct): ?>
     <p class="calculator-warning" style="color: red; font-weight: bold;">
-        <?= esc_html__('Selecteer eerst een variatie om de calculator te gebruiken.', 'egaline') ?>
+        <?= esc_html__('Selecteer eerst een variatie om de calculator te gebruiken.', 'egaline-calculator') ?>
     </p>
 <?php endif ?>
 
@@ -42,7 +42,7 @@ $calculation_mode ??= 'kg_per_mm';
          data-discount-threshold="<?= esc_attr($discount_threshold) ?>"
          data-discount-percentage="<?= esc_attr($discount_percentage) ?>"
     >
-        <h3><?= esc_html__('Bereken het aantal zakken', 'egaline') ?></h3>
+        <h3><?= esc_html__('Bereken het aantal zakken', 'egaline-calculator') ?></h3>
         <input type="hidden" name="variation_id" class="calculator-variation-id" value="<?= esc_attr($variation_id) ?>">
 
         <div class="inputs-container">
@@ -52,7 +52,7 @@ $calculation_mode ??= 'kg_per_mm';
                 </label>
                 <div class="input-wrapper">
                     <button type="button" class="qty-btn minus"
-                            aria-label="<?= esc_attr__('Verminder aantal millimeter', 'egaline') ?>"
+                            aria-label="<?= esc_attr__('Verminder aantal millimeter', 'egaline-calculator') ?>"
                             <?= $isVariableProduct ? 'disabled' : '' ?>>−</button>
                     <input type="number"
                            id="egaline-mm"
@@ -64,18 +64,18 @@ $calculation_mode ??= 'kg_per_mm';
                            aria-describedby="egaline-mm-help"
                            <?= $isVariableProduct ? 'disabled' : '' ?>>
                     <button type="button" class="qty-btn plus"
-                            aria-label="<?= esc_attr__('Verhoog aantal millimeter', 'egaline') ?>"
+                            aria-label="<?= esc_attr__('Verhoog aantal millimeter', 'egaline-calculator') ?>"
                             <?= $isVariableProduct ? 'disabled' : '' ?>>+</button>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="egaline-m2-label" for="egaline-m2">
-                    <?= esc_html__('Aantal m² egaliseren?', 'egaline') ?>
+                    <?= esc_html__('Aantal m² egaliseren?', 'egaline-calculator') ?>
                 </label>
                 <div class="input-wrapper">
                     <button type="button" class="qty-btn minus"
-                            aria-label="<?= esc_attr__('Verminder aantal m²', 'egaline') ?>"
+                            aria-label="<?= esc_attr__('Verminder aantal m²', 'egaline-calculator') ?>"
                             <?= $isVariableProduct ? 'disabled' : '' ?>>−</button>
                     <input type="number"
                            id="egaline-m2"
@@ -87,26 +87,26 @@ $calculation_mode ??= 'kg_per_mm';
                            aria-describedby="egaline-m2-help"
                            <?= $isVariableProduct ? 'disabled' : '' ?>>
                     <button type="button" class="qty-btn plus"
-                            aria-label="<?= esc_attr__('Verhoog aantal m²', 'egaline') ?>"
+                            aria-label="<?= esc_attr__('Verhoog aantal m²', 'egaline-calculator') ?>"
                             <?= $isVariableProduct ? 'disabled' : '' ?>>+</button>
                 </div>
             </div>
         </div>
 
         <div class="result">
-            <h3><?= esc_html__('Uw resultaat', 'egaline') ?></h3>
+            <h3><?= esc_html__('Uw resultaat', 'egaline-calculator') ?></h3>
             <div class="result-container">
                 <div class="result-section benodigde-hoeveelheid">
-                    <h4><?= esc_html__('Benodigde hoeveelheid', 'egaline') ?></h4>
+                    <h4><?= esc_html__('Benodigde hoeveelheid', 'egaline-calculator') ?></h4>
                     <p><span class="result-kg">0.00</span> kg Egaline</p>
                 </div>
                 <div class="result-section aantal-zakken">
                     <h4 class="result-bags-label">
-                        <?= esc_html__('Aantal zakken', 'egaline') ?> (<?= esc_html($kg_per_bag) ?>kg)
+                        <?= esc_html__('Aantal zakken', 'egaline-calculator') ?> (<?= esc_html($kg_per_bag) ?>kg)
                     </h4>
                     <div class="input-wrapper">
                         <button type="button" class="qty-btn minus zakken-minus"
-                                aria-label="<?= esc_attr__('Verlaag aantal zakken', 'egaline') ?>"
+                                aria-label="<?= esc_attr__('Verlaag aantal zakken', 'egaline-calculator') ?>"
                                 <?= $isVariableProduct ? 'disabled' : '' ?>>−</button>
                         <input type="number"
                                name="result_bags"
@@ -117,7 +117,7 @@ $calculation_mode ??= 'kg_per_mm';
                                aria-describedby="result-bags-help"
                                <?= $isVariableProduct ? 'disabled' : '' ?>>
                         <button type="button" class="qty-btn plus zakken-plus"
-                                aria-label="<?= esc_attr__('Verhoog aantal zakken', 'egaline') ?>"
+                                aria-label="<?= esc_attr__('Verhoog aantal zakken', 'egaline-calculator') ?>"
                                 <?= $isVariableProduct ? 'disabled' : '' ?>>+</button>
                     </div>
                 </div>
@@ -126,10 +126,10 @@ $calculation_mode ??= 'kg_per_mm';
 
         <div class="total-price">
             <div class="total-price-row">
-                <h4><?= esc_html__('Totaalprijs:', 'egaline') ?></h4>
+                <h4><?= esc_html__('Totaalprijs:', 'egaline-calculator') ?></h4>
                 <span class="total-price-value">0,00 EUR</span>
             </div>
-            <p class="incl-btw styled-btw"><?= esc_html__('Inclusief BTW', 'egaline') ?></p>
+            <p class="incl-btw styled-btw"><?= esc_html__('Inclusief BTW', 'egaline-calculator') ?></p>
         </div>
     </div>
 </form>

@@ -32,6 +32,7 @@ use function is_readable;
 use function pathinfo;
 use function plugin_dir_path;
 use function plugin_dir_url;
+use function load_plugin_textdomain;
 use function printf;
 use function sanitize_key;
 use function wp_enqueue_script;
@@ -116,6 +117,7 @@ final readonly class EgalineCalculatorInit
     private function registerHooks(): void
     {
         add_action('wp_enqueue_scripts', $this->enqueueAssets(...));
+        add_action('init', $this->loadTextDomain(...));
         add_action('plugins_loaded', $this->checkDependencies(...));
     }
 
@@ -203,6 +205,20 @@ final readonly class EgalineCalculatorInit
     {
         $filename = pathinfo($filePath, PATHINFO_FILENAME);
         return sanitize_key(self::TEXT_DOMAIN . '-' . $filename);
+    }
+
+    /**
+     * Load plugin text domain for translations
+     *
+     * @return void
+     */
+    public function loadTextDomain(): void
+    {
+        load_plugin_textdomain(
+            self::TEXT_DOMAIN,
+            false,
+            dirname(plugin_basename(__FILE__)) . '/languages'
+        );
     }
 
     /**

@@ -176,21 +176,21 @@ readonly final class Egaline_Calculator_Cart
 
             if (isset($d['needed_kg'])) {
                 $item_data[] = [
-                    'name' => __('Benodigde hoeveelheid (kg)', 'egaline'),
+                    'name' => __('Benodigde hoeveelheid (kg)', 'egaline-calculator'),
                     'value' => sprintf('%.2f kg', $d['needed_kg'] * $q),
                 ];
             }
 
             if (isset($d['bags'])) {
                 $item_data[] = [
-                    'name' => __('Aantal zakken', 'egaline'),
+                    'name' => __('Aantal zakken', 'egaline-calculator'),
                     'value' => sprintf('%d (%d kg per zak)', $d['bags'] * $q, $d['kg_per_bag']),
                 ];
             }
 
             if (isset($d['discount_amount']) && $d['discount_amount'] > 0) {
                 $item_data[] = [
-                    'name' => __('Korting toegepast', 'egaline'),
+                    'name' => __('Korting toegepast', 'egaline-calculator'),
                     'value' => sprintf('-€ %.2f', $d['discount_amount'] * $q),
                 ];
             }
@@ -209,19 +209,19 @@ readonly final class Egaline_Calculator_Cart
             $q = (int) ($values['quantity'] ?? 1);
 
             if (isset($d['needed_kg'])) {
-                $item->add_meta_data(__('Benodigde hoeveelheid (kg)', 'egaline'), sprintf('%.2f kg', $d['needed_kg'] * $q));
+                $item->add_meta_data(__('Benodigde hoeveelheid (kg)', 'egaline-calculator'), sprintf('%.2f kg', $d['needed_kg'] * $q));
             }
 
             if (isset($d['bags'])) {
-                $item->add_meta_data(__('Aantal zakken', 'egaline'), sprintf('%d (%d kg per zak)', $d['bags'] * $q, $d['kg_per_bag']));
+                $item->add_meta_data(__('Aantal zakken', 'egaline-calculator'), sprintf('%d (%d kg per zak)', $d['bags'] * $q, $d['kg_per_bag']));
             }
 
             if (isset($d['total_price'])) {
-                $item->add_meta_data(__('Totaalprijs', 'egaline'), sprintf('€ %.2f', $d['total_price'] * $q));
+                $item->add_meta_data(__('Totaalprijs', 'egaline-calculator'), sprintf('€ %.2f', $d['total_price'] * $q));
             }
 
             if (isset($d['discount_amount']) && $d['discount_amount'] > 0) {
-                $item->add_meta_data(__('Korting toegepast', 'egaline'), sprintf('-€ %.2f', $d['discount_amount'] * $q));
+                $item->add_meta_data(__('Korting toegepast', 'egaline-calculator'), sprintf('-€ %.2f', $d['discount_amount'] * $q));
             }
         }
     }
