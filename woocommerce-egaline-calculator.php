@@ -8,7 +8,7 @@
  * Author URI: https://example.com
  * Text Domain: egaline-calculator
  * Domain Path: /languages
- * Requires PHP: 8.1
+ * Requires PHP: 8.2
  * Requires at least: 6.4
  * WC requires at least: 8.0
  * WC tested up to: 9.4
@@ -115,8 +115,8 @@ final readonly class EgalineCalculatorInit
      */
     private function registerHooks(): void
     {
-        add_action('wp_enqueue_scripts', $this->enqueueAssets(...));
-        add_action('plugins_loaded', $this->checkDependencies(...));
+        add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+        add_action('plugins_loaded', [$this, 'checkDependencies']);
     }
 
     /**
@@ -224,7 +224,7 @@ final readonly class EgalineCalculatorInit
     public function checkDependencies(): void
     {
         if (!class_exists('WooCommerce')) {
-            add_action('admin_notices', $this->displayDependencyNotice(...));
+            add_action('admin_notices', [$this, 'displayDependencyNotice']);
         }
     }
 
