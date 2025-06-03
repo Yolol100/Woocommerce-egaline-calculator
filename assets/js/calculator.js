@@ -189,12 +189,8 @@ jQuery(document).ready(($) => {
       if (!isValid) {
         alert("Vul alle velden in voordat u verder gaat!");
       }
-      return isValid;
-    };
-
-    $("#calculate_button").on("click", () => {
-      if (!validateFields()) return false;
-    });
+    return isValid;
+  };
 
     // Event handlers voor invoervelden
     $inputs.egalineMm.on("input change", () => {
