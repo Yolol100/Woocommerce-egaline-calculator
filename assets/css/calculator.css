@@ -262,6 +262,13 @@ label {
   margin-block-end: 10px;
 }
 
+.calc-error {
+  display: none;
+  color: red;
+  font-weight: bold;
+  margin-block-start: 10px;
+}
+
 /* ------------------------------------------------------------------------- */
 /* Container Queries (maximale moderniteit)                                */
 /* ------------------------------------------------------------------------- */
