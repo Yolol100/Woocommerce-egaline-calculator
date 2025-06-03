@@ -1,142 +1,96 @@
 <?php
+/**
+ * Admin metabox for configuring Egaline Calculator settings.
+ *
+ * @package Egaline
+ */
+
 declare(strict_types=1);
 
+use function esc_html_e;
+use function wp_nonce_field;
+use function woocommerce_wp_checkbox;
+use function woocommerce_wp_select;
+use function woocommerce_wp_text_input;
+
 if (!defined('ABSPATH')) {
-    exit; // Voorkom directe toegang
+    exit;
 }
+
+$metaValues = $metaValues ?? [];
 ?>
 
 <div class="options-group" role="group" aria-labelledby="calculator-settings-heading">
-    <h3 id="calculator-settings-heading" class="sr-only">Calculator Instellingen</h3>
+    <h3 id="calculator-settings-heading" class="screen-reader-text">
+        <?php esc_html_e('Calculator Instellingen', 'egaline-calculator'); ?>
+    </h3>
 
-    <!-- Activeer Egaline Calculator -->
-    <div class="form-field">
-        <label for="enable_calculator" class="form-label">
-            <?php esc_html_e('Activeer Egaline Calculator', 'egaline-calculator'); ?>
-        </label>
-        <input
-            type="checkbox"
-            id="enable_calculator"
-            name="_enable_calculator"
-            value="yes"
-            class="form-checkbox"
-            <?php checked($meta_values['enable_calculator'], 'yes'); ?>
-            aria-checked="<?php echo esc_attr($meta_values['enable_calculator'] === 'yes' ? 'true' : 'false'); ?>"
-        />
-    </div>
+    <?php
+    woocommerce_wp_checkbox([
+        'id'            => '_enable_calculator',
+        'label'         => __('Activeer Egaline Calculator', 'egaline-calculator'),
+        'value'         => $metaValues['enable_calculator'],
+        'cbvalue'       => 'yes',
+        'wrapper_class' => 'form-field',
+    ]);
 
-    <!-- Rekenmethode -->
-    <div class="form-field">
-        <label for="calculation_mode" class="form-label">
-            <?php esc_html_e('Rekenmethode', 'egaline-calculator'); ?>
-        </label>
-        <select 
-            id="calculation_mode" 
-            name="_calculation_mode" 
-            class="form-select"
-            aria-describedby="calculation_mode-help"
-        >
-            <option value="kg_per_mm" <?php selected($meta_values['calculation_mode'], 'kg_per_mm'); ?>>
-                <?php esc_html_e('Kg per mm', 'egaline-calculator'); ?>
-            </option>
-            <option value="layers_per_mm" <?php selected($meta_values['calculation_mode'], 'layers_per_mm'); ?>>
-                <?php esc_html_e('Lagen per mm', 'egaline-calculator'); ?>
-            </option>
-        </select>
-        <div id="calculation_mode-help" class="form-description">
-            <?php esc_html_e('Kies de eenheid voor de rekensom.', 'egaline-calculator'); ?>
-        </div>
-    </div>
+    woocommerce_wp_select([
+        'id'            => '_calculation_mode',
+        'label'         => __('Rekenmethode', 'egaline-calculator'),
+        'value'         => $metaValues['calculation_mode'],
+        'options'       => [
+            'kg_per_mm' => __('Kg per mm', 'egaline-calculator'),
+        ],
+        'wrapper_class' => 'form-field',
+        'desc_tip'      => true,
+        'description'   => __('Kies de eenheid voor de rekensom.', 'egaline-calculator'),
+    ]);
 
-    <!-- Label en input voor Kg per mm of Lagen per mm -->
-    <div class="form-field">
-        <label for="kg_per_mm" id="label_kg_per_mm" class="form-label">
-            <?php echo ($meta_values['calculation_mode'] === 'kg_per_mm')
-                ? esc_html__('Kg per mm', 'egaline-calculator')
-                : esc_html__('Lagen per mm', 'egaline-calculator'); ?>:
-        </label>
-        <input
-            type="number"
-            id="kg_per_mm"
-            name="_kg_per_mm"
-            value="<?php echo esc_attr($meta_values['kg_per_mm']); ?>"
-            step="0.01"
-            min="0"
-            class="form-input"
-            aria-label="<?php esc_attr_e('Voer de waarde in voor kg per mm of lagen per mm', 'egaline-calculator'); ?>"
-        />
-    </div>
+    woocommerce_wp_text_input([
+        'id'                => '_kg_per_mm',
+        'label'             => __('Kg per mm', 'egaline-calculator'),
+        'value'             => $metaValues['kg_per_mm'],
+        'type'              => 'number',
+        'custom_attributes' => ['step' => '0.01', 'min' => '0'],
+        'wrapper_class'     => 'form-field',
+    ]);
 
-    <!-- Kg per zak -->
-    <div class="form-field">
-        <label for="kg_per_bag" class="form-label">
-            <?php esc_html_e('Kg per zak', 'egaline-calculator'); ?>
-        </label>
-        <input
-            type="number"
-            id="kg_per_bag"
-            name="_kg_per_bag"
-            value="<?php echo esc_attr($meta_values['kg_per_bag']); ?>"
-            step="0.1"
-            min="1"
-            class="form-input"
-            aria-label="<?php esc_attr_e('Aantal kg per zak', 'egaline-calculator'); ?>"
-        />
-    </div>
+    woocommerce_wp_text_input([
+        'id'                => '_kg_per_bag',
+        'label'             => __('Kg per zak', 'egaline-calculator'),
+        'value'             => $metaValues['kg_per_bag'],
+        'type'              => 'number',
+        'custom_attributes' => ['step' => '0.1', 'min' => '1'],
+        'wrapper_class'     => 'form-field',
+    ]);
 
-    <!-- Kg per m² -->
-    <div class="form-field">
-        <label for="kg_per_m2" class="form-label">
-            <?php esc_html_e('Kg per m²', 'egaline-calculator'); ?>
-        </label>
-        <input
-            type="number"
-            id="kg_per_m2"
-            name="_kg_per_m2"
-            value="<?php echo esc_attr($meta_values['kg_per_m2']); ?>"
-            step="0.01"
-            min="0"
-            class="form-input"
-            aria-label="<?php esc_attr_e('Aantal kg per vierkante meter', 'egaline-calculator'); ?>"
-        />
-    </div>
+    woocommerce_wp_text_input([
+        'id'                => '_kg_per_m2',
+        'label'             => __('Kg per m²', 'egaline-calculator'),
+        'value'             => $metaValues['kg_per_m2'],
+        'type'              => 'number',
+        'custom_attributes' => ['step' => '0.01', 'min' => '0'],
+        'wrapper_class'     => 'form-field',
+    ]);
 
-    <!-- Aantal zakken voor korting -->
-    <div class="form-field">
-        <label for="discount_threshold" class="form-label">
-            <?php esc_html_e('Aantal zakken voor korting', 'egaline-calculator'); ?>
-        </label>
-        <input
-            type="number"
-            id="discount_threshold"
-            name="_discount_threshold"
-            value="<?php echo esc_attr($meta_values['discount_threshold']); ?>"
-            step="1"
-            min="1"
-            class="form-input"
-            aria-label="<?php esc_attr_e('Minimaal aantal zakken voor korting', 'egaline-calculator'); ?>"
-        />
-    </div>
+    woocommerce_wp_text_input([
+        'id'                => '_discount_threshold',
+        'label'             => __('Aantal zakken voor korting', 'egaline-calculator'),
+        'value'             => $metaValues['discount_threshold'],
+        'type'              => 'number',
+        'custom_attributes' => ['step' => '1', 'min' => '1'],
+        'wrapper_class'     => 'form-field',
+    ]);
 
-    <!-- Kortingspercentage -->
-    <div class="form-field">
-        <label for="discount_percentage" class="form-label">
-            <?php esc_html_e('Kortingspercentage (%)', 'egaline-calculator'); ?>
-        </label>
-        <input
-            type="number"
-            id="discount_percentage"
-            name="_discount_percentage"
-            value="<?php echo esc_attr($meta_values['discount_percentage']); ?>"
-            step="0.1"
-            min="0"
-            max="100"
-            class="form-input"
-            aria-label="<?php esc_attr_e('Kortingspercentage voor bulkbestellingen', 'egaline-calculator'); ?>"
-        />
-    </div>
+    woocommerce_wp_text_input([
+        'id'                => '_discount_percentage',
+        'label'             => __('Kortingspercentage (%)', 'egaline-calculator'),
+        'value'             => $metaValues['discount_percentage'],
+        'type'              => 'number',
+        'custom_attributes' => ['step' => '0.1', 'min' => '0', 'max' => '100'],
+        'wrapper_class'     => 'form-field',
+    ]);
+    ?>
 
-    <!-- Nonce veld -->
     <?php wp_nonce_field('egaline_save_calculator_settings', 'egaline_calculator_nonce'); ?>
-
 </div>

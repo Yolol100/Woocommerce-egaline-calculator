@@ -48,7 +48,7 @@ $calculation_mode ??= 'kg_per_mm';
         <div class="inputs-container">
             <div class="form-group">
                 <label class="egaline-mm-label" for="egaline-mm">
-                    <?= esc_html($calculation_mode === 'kg_per_mm' ? 'Hoe dik egaliseren in mm?' : 'Aantal lagen in mm') ?>
+                    <?= esc_html__('Hoe dik egaliseren in mm?', 'egaline-calculator') ?>
                 </label>
                 <div class="input-wrapper">
                     <button type="button" class="qty-btn minus"
@@ -141,5 +141,6 @@ $calculation_mode ??= 'kg_per_mm';
                 <?= esc_html__('Dark Mode', 'egaline-calculator') ?>
             </button>
         </div>
+        <p class="calc-error" style="display:none"></p>
     </div>
 </form>
