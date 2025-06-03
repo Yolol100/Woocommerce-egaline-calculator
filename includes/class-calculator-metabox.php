@@ -7,7 +7,22 @@
 
 declare(strict_types=1);
 
-final class Egaline_Calculator_Metabox
+namespace Webactueel\EgalineCalculator;
+
+use function add_action;
+use function current_user_can;
+use function filter_var;
+use function filemtime;
+use function get_post_meta;
+use function in_array;
+use function plugin_dir_path;
+use function plugin_dir_url;
+use function sanitize_text_field;
+use function update_post_meta;
+use function wp_enqueue_script;
+use function wp_verify_nonce;
+
+final readonly class EgalineCalculatorMetabox
 {
     private const META_KEYS = [
         'enable'              => '_enable_calculator',
@@ -24,7 +39,6 @@ final class Egaline_Calculator_Metabox
         'action' => 'egaline_save_calculator_settings',
     ];
 
-    // Vervanging voor enum CalculationMode.
     private const CALCULATION_MODES = [
         'PER_MM' => 'kg_per_mm',
         'PER_M2' => 'kg_per_m2',
@@ -32,12 +46,12 @@ final class Egaline_Calculator_Metabox
 
     public function __construct()
     {
-        add_action('woocommerce_product_options_general_product_data', [$this, 'render_metabox_fields']);
-        add_action('woocommerce_process_product_meta', [$this, 'persist_metabox_data']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
+        add_action('woocommerce_product_options_general_product_data', $this->renderMetaboxFields(...));
+        add_action('woocommerce_process_product_meta', $this->persistMetaboxData(...));
+        add_action('admin_enqueue_scripts', $this->enqueueAdminScripts(...));
     }
 
-    public function enqueue_admin_scripts(): void
+    public function enqueueAdminScripts(): void
     {
         wp_enqueue_script(
             'egaline-calculator-metabox',
@@ -48,71 +62,76 @@ final class Egaline_Calculator_Metabox
         );
     }
 
-    public function render_metabox_fields(): void
+    public function renderMetaboxFields(): void
     {
         global $post;
-        
-        $meta_values = [
-            'enable_calculator'   => $this->get_meta_value($post->ID, self::META_KEYS['enable']),
-            'kg_per_bag'          => $this->get_meta_value($post->ID, self::META_KEYS['kg_bag'], 1.0),
-            'kg_per_mm'           => $this->get_meta_value($post->ID, self::META_KEYS['kg_mm']),
-            'kg_per_m2'           => $this->get_meta_value($post->ID, self::META_KEYS['kg_m2']),
-            'calculation_mode'    => $this->get_meta_value(
+
+        $metaValues = [
+            'enable_calculator'   => $this->getMetaValue($post->ID, self::META_KEYS['enable']),
+            'kg_per_bag'          => $this->getMetaValue($post->ID, self::META_KEYS['kg_bag'], 1.0),
+            'kg_per_mm'           => $this->getMetaValue($post->ID, self::META_KEYS['kg_mm']),
+            'kg_per_m2'           => $this->getMetaValue($post->ID, self::META_KEYS['kg_m2']),
+            'calculation_mode'    => $this->getMetaValue(
                 $post->ID,
                 self::META_KEYS['mode'],
                 self::CALCULATION_MODES['PER_MM']
             ),
-            'discount_threshold'  => $this->get_meta_value($post->ID, self::META_KEYS['discount_threshold']),
-            'discount_percentage' => $this->get_meta_value($post->ID, self::META_KEYS['discount_percentage']),
+            'discount_threshold'  => $this->getMetaValue($post->ID, self::META_KEYS['discount_threshold']),
+            'discount_percentage' => $this->getMetaValue($post->ID, self::META_KEYS['discount_percentage']),
         ];
 
         require_once plugin_dir_path(__FILE__) . '../templates/metabox-calculator.php';
     }
 
-    public function persist_metabox_data(int $post_id): void
+    public function persistMetaboxData(int $postId): void
     {
-        if (!$this->validate_nonce() || !current_user_can('edit_post', $post_id)) {
+        if (!$this->validateNonce() || !current_user_can('edit_post', $postId)) {
             return;
         }
 
-        foreach (self::META_KEYS as $key => $meta_key) {
-            $value = $_POST[$meta_key] ?? match ($meta_key) {
+        foreach (self::META_KEYS as $key => $metaKey) {
+            $value = $_POST[$metaKey] ?? match ($metaKey) {
                 self::META_KEYS['enable'] => 'no',
-                default => ''
+                default => '',
             };
-            $this->update_meta_field($post_id, $meta_key, $value);
+
+            $this->updateMetaField($postId, $metaKey, $value);
         }
     }
 
-    private function get_meta_value(int $post_id, string $key, mixed $default = ''): mixed
+    private function getMetaValue(int $postId, string $key, mixed $default = ''): mixed
     {
-        $value = get_post_meta($post_id, $key, true);
+        $value = get_post_meta($postId, $key, true);
         return $value !== '' ? $value : $default;
     }
 
-    private function validate_nonce(): bool
+    private function validateNonce(): bool
     {
         return isset($_POST[self::NONCE_CONFIG['name']])
             && wp_verify_nonce($_POST[self::NONCE_CONFIG['name']], self::NONCE_CONFIG['action']);
     }
 
-    private function update_meta_field(int $post_id, string $meta_key, mixed $value): void
+    private function updateMetaField(int $postId, string $metaKey, mixed $value): void
     {
-        $sanitized = match ($meta_key) {
-            self::META_KEYS['kg_bag'], self::META_KEYS['discount_threshold'] =>
-                filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]),
-            self::META_KEYS['kg_mm'], self::META_KEYS['kg_m2'], self::META_KEYS['discount_percentage'] =>
-                filter_var($value, FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => 0]]),
-            self::META_KEYS['mode'] =>
-                in_array($value, array_values(self::CALCULATION_MODES), true) ? $value : self::CALCULATION_MODES['PER_MM'],
-            default =>
-                sanitize_text_field((string)$value)
+        $sanitized = match ($metaKey) {
+            self::META_KEYS['kg_bag'],
+            self::META_KEYS['discount_threshold'] => filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]),
+
+            self::META_KEYS['kg_mm'],
+            self::META_KEYS['kg_m2'],
+            self::META_KEYS['discount_percentage'] => filter_var($value, FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => 0]]),
+
+            self::META_KEYS['mode'] => in_array($value, array_values(self::CALCULATION_MODES), true)
+                ? $value
+                : self::CALCULATION_MODES['PER_MM'],
+
+            default => sanitize_text_field((string) $value),
         };
 
         if ($sanitized !== null) {
-            update_post_meta($post_id, $meta_key, $sanitized);
+            update_post_meta($postId, $metaKey, $sanitized);
         }
     }
 }
 
-new Egaline_Calculator_Metabox();
+new EgalineCalculatorMetabox();

@@ -1,61 +1,106 @@
-## **Egaline Calculator Plugin for WooCommerce**  
+# 🧮 Egaline Calculator Plugin for WooCommerce
 
-A powerful and highly customizable WooCommerce extension that adds a material calculator to product pages. The plugin allows customers to calculate the required material quantity (e.g., kg per m², kg per mm) based on their input. It seamlessly integrates with WooCommerce and ensures accurate price calculations.
+[![WordPress Plugin Version](https://img.shields.io/badge/WordPress-5.0%2B-blue.svg)](https://wordpress.org/)
+[![WooCommerce](https://img.shields.io/badge/WooCommerce-5.0%2B-purple.svg)](https://woocommerce.com/)
+[![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-777BB4.svg)](https://php.net/)
+[![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-## 🚀 **Features**  
+A powerful and highly customizable WooCommerce extension that adds an intelligent material calculator to product pages. Enable customers to calculate precise material quantities (kg per m², kg per mm) with real-time price updates and seamless cart integration.
 
-### **Advanced Material Calculator**
-- Dynamically calculates the required material quantity based on **thickness (mm), area (m²), and number of bags**.
-- Allows **real-time adjustments**—when increasing thickness, area and bag count adjust accordingly.
-- Ensures logical dependencies:  
-  - **If thickness increases**, area and bag count update.  
-  - **If area or bag count is modified manually**, thickness remains unchanged.
+---
 
-### **Smart Price Calculation**
-- Dynamically updates **total price** based on selected product options.
-- **Automatic discount calculation** if a threshold is reached (e.g., bulk purchase discounts).
+## 📋 Table of Contents
 
-### **Seamless WooCommerce Integration**
-- Appears **before the "Add to Cart" button** on product pages.
-- Works with **simple and variable products**.
-- Supports **dynamic price updates** when a variation is selected.
+- [✨ Features](#-features)
+- [🔧 Requirements](#-requirements)
+- [📦 Installation](#-installation)
+- [⚙️ Configuration](#️-configuration)
+- [🎯 Usage](#-usage)
+- [🔌 API Reference](#-api-reference)
+- [🔗 Hooks & Filters](#-hooks--filters)
+- [🐛 Troubleshooting](#-troubleshooting)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
-### **Customizable Admin Panel**
-- Enables product-specific settings through a **custom WooCommerce metabox**.
-- Configure:
-  - **Material weight per bag**
-  - **Material density per mm & per m²**
-  - **Calculation mode (kg per mm or alternative modes)**
-  - **Discount settings (threshold & percentage)**
-  - **Enable/disable calculator per product**
+---
 
-### **Optimized User Experience**
-- **Instant feedback**—users see real-time changes in calculated values.
-- **Input validation** to ensure only valid numbers are entered.
-- **LocalStorage Support**—retains calculator values even after a page refresh.
+## ✨ Features
 
-### **Performance & Security**
-- Fully **AJAX-based** for smooth interaction without page reloads.
-- **Sanitized user input** to prevent security vulnerabilities.
-- Optimized for **speed and performance** with WooCommerce.
+### 🧮 **Advanced Material Calculator**
+- **Dynamic Quantity Calculation**: Automatically calculates required material based on thickness (mm), area (m²), and bag count
+- **Smart Dependencies**: Intelligent adjustment system where thickness changes update area and bag count accordingly
+- **Real-time Updates**: Instant feedback with live calculation updates as users adjust parameters
+- **Multiple Calculation Modes**: Support for various material calculation methods (kg per mm, alternative modes)
 
-## 🛠 **Requirements**
-- **WordPress 5.0+** (recommended latest version)
-- **WooCommerce 5.0+**
-- **PHP 7.4+** (PHP 8+ recommended for best performance)
+### 💰 **Smart Price Calculation**
+- **Dynamic Pricing**: Real-time total price updates based on calculated quantities
+- **Bulk Discounts**: Automatic discount application when threshold quantities are reached
+- **Variable Product Support**: Seamless integration with WooCommerce variable products
+- **Tax Integration**: Proper tax calculation integration with WooCommerce settings
 
-## 📦 **Installation**
+### 🔧 **Seamless WooCommerce Integration**
+- **Strategic Placement**: Calculator appears before "Add to Cart" button for optimal user flow
+- **Product Type Support**: Compatible with simple and variable WooCommerce products
+- **Cart Integration**: Calculated quantities automatically added to cart with proper metadata
+- **Order Integration**: Calculator data preserved through checkout and order management
 
-### **1. Install via WordPress Admin**
-1. Go to `Plugins > Add New`
-2. Click **Upload Plugin** and select the ZIP file.
-3. Click **Install Now** and then **Activate**.
+### ⚙️ **Customizable Admin Panel**
+- **Product-Specific Settings**: Individual calculator configuration per product via custom metabox
+- **Flexible Configuration**:
+ - Material weight per bag settings
+ - Material density configuration (per mm & per m²)
+ - Calculation mode selection
+ - Discount threshold and percentage settings
+ - Per-product calculator enable/disable toggle
 
-### **2. Manual Installation**
-1. Download the plugin ZIP file.
-2. Extract and upload the folder to `/wp-content/plugins/`.
-3. Go to `Plugins` in WordPress and **activate** the plugin.
+### 🎯 **Optimized User Experience**
+- **Input Validation**: Robust validation ensuring only valid numerical inputs
+- **LocalStorage Persistence**: Calculator values retained across page refreshes
+- **Responsive Design**: Mobile-friendly interface that works on all devices
+- **Loading States**: Clear loading indicators during AJAX operations
 
-### **3. Using Git (For Developers)**
+### 🛡️ **Performance & Security**
+- **AJAX-Powered**: Smooth interactions without page reloads
+- **Input Sanitization**: Comprehensive security measures against malicious input
+- **Optimized Performance**: Minimal impact on page load times
+- **Error Handling**: Graceful error handling with user-friendly messages
+
+---
+
+## 🔧 Requirements
+
+| Component | Minimum Version | Recommended |
+|-----------|----------------|-------------|
+| **WordPress** | 6.0+ | Latest Stable |
+| **WooCommerce** | 6.0+ | Latest Stable |
+| **PHP** | 8.0+ | 8.1+ |
+| **MySQL** | 5.6+ | 8.0+ |
+
+### **Server Requirements**
+- Memory Limit: 128MB minimum (256MB recommended)
+- Max Execution Time: 30 seconds minimum
+- cURL support enabled
+- JSON support enabled
+
+---
+
+## 📦 Installation
+
+### Method 1: WordPress Admin Dashboard
+1. Navigate to `Plugins > Add New`
+2. Click **Upload Plugin**
+3. Select the downloaded ZIP file
+4. Click **Install Now**
+5. Click **Activate Plugin**
+
+### Method 2: Manual Installation
+1. Download the plugin ZIP file
+2. Extract the ZIP file
+3. Upload the `egaline-calculator` folder to `/wp-content/plugins/`
+4. Navigate to `Plugins` in WordPress admin
+5. Find "Egaline Calculator" and click **Activate**
+
+### Method 3: Git Installation (Developers)
 ```bash
+cd /path/to/wordpress/wp-content/plugins/
 git clone https://github.com/yolol100/egaline-calculator.git

@@ -8,10 +8,13 @@
  * Author URI: https://example.com
  * Text Domain: egaline-calculator
  * Domain Path: /languages
- * Requires PHP: 8.0
- * Requires at least: 6.0
- * WC requires at least: 6.0
- * WC tested up to: 9.0
+ * Requires PHP: 8.1
+ * Requires at least: 6.4
+ * WC requires at least: 8.0
+ * WC tested up to: 9.4
+ * Network: false
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 declare(strict_types=1);
@@ -19,125 +22,227 @@ declare(strict_types=1);
 namespace Webactueel\EgalineCalculator;
 
 use function add_action;
+use function class_exists;
+use function esc_html;
+use function error_log;
+use function file_exists;
+use function filemtime;
 use function is_product;
 use function is_readable;
+use function pathinfo;
 use function plugin_dir_path;
 use function plugin_dir_url;
+use function printf;
 use function sanitize_key;
 use function wp_enqueue_script;
 use function wp_enqueue_style;
 
-defined('ABSPATH') || exit;
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-final class Egaline_Calculator_Init
+/**
+ * Main plugin initialization class
+ * 
+ * @since 1.0.0
+ */
+final readonly class EgalineCalculatorInit
 {
+    /**
+     * Plugin version
+     */
     private const VERSION = '1.0.0';
+    
+    /**
+     * Text domain for translations
+     */
     private const TEXT_DOMAIN = 'egaline-calculator';
+    
+    /**
+     * Required plugin files
+     */
     private const REQUIRED_FILES = [
         'includes/class-calculator-display.php',
         'includes/class-calculator-metabox.php',
         'includes/class-calculator-cart.php',
     ];
 
-    private readonly string $plugin_path;
-    private readonly string $plugin_url;
+    /**
+     * Plugin directory path
+     */
+    private readonly string $pluginPath;
+    
+    /**
+     * Plugin directory URL
+     */
+    private readonly string $pluginUrl;
 
+    /**
+     * Initialize the plugin
+     */
     public function __construct()
     {
-        $this->plugin_path = plugin_dir_path(__FILE__);
-        $this->plugin_url  = plugin_dir_url(__FILE__);
+        $this->pluginPath = plugin_dir_path(__FILE__);
+        $this->pluginUrl = plugin_dir_url(__FILE__);
 
-        $this->includes();
-        $this->register_hooks();
+        $this->includeRequiredFiles();
+        $this->registerHooks();
     }
 
-    private function includes(): void
+    /**
+     * Include all required plugin files
+     * 
+     * @return void
+     */
+    private function includeRequiredFiles(): void
     {
         foreach (self::REQUIRED_FILES as $file) {
-            $file_path = $this->plugin_path . $file;
-            if (is_readable($file_path)) {
-                require_once $file_path;
+            $filePath = $this->pluginPath . $file;
+            
+            if (is_readable($filePath)) {
+                require_once $filePath;
             } else {
-                $this->log_error("Bestand niet gevonden of niet leesbaar: {$file_path}");
+                $this->logError("Bestand niet gevonden of niet leesbaar: {$filePath}");
             }
         }
     }
 
-    private function register_hooks(): void
+    /**
+     * Register WordPress hooks
+     * 
+     * @return void
+     */
+    private function registerHooks(): void
     {
-        add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
-        add_action('plugins_loaded', [$this, 'check_dependencies']);
+        add_action('wp_enqueue_scripts', $this->enqueueAssets(...));
+        add_action('plugins_loaded', $this->checkDependencies(...));
     }
 
-    public function enqueue_assets(): void
+    /**
+     * Enqueue plugin assets on product pages
+     * 
+     * @return void
+     */
+    public function enqueueAssets(): void
     {
         if (!is_product()) {
             return;
         }
 
-        $this->enqueue_script('assets/js/calculator.js', ['jquery'], true);
-        $this->enqueue_style('assets/css/calculator.css');
+        $this->enqueueScript(
+            relativePath: 'assets/js/calculator.js',
+            dependencies: ['jquery'],
+            inFooter: true
+        );
+        
+        $this->enqueueStyle('assets/css/calculator.css');
     }
 
-    private function enqueue_script(string $relative_path, array $dependencies = [], bool $in_footer = false): void
-    {
-        $file_path = $this->plugin_path . $relative_path;
-        $file_url  = $this->plugin_url . $relative_path;
+    /**
+     * Enqueue a JavaScript file
+     * 
+     * @param string $relativePath Path relative to plugin directory
+     * @param array $dependencies Script dependencies
+     * @param bool $inFooter Whether to load in footer
+     * @return void
+     */
+    private function enqueueScript(
+        string $relativePath,
+        array $dependencies = [],
+        bool $inFooter = false
+    ): void {
+        $filePath = $this->pluginPath . $relativePath;
+        $fileUrl = $this->pluginUrl . $relativePath;
 
-        if (!file_exists($file_path)) {
-            $this->log_error("JS-bestand ontbreekt: {$file_path}");
+        if (!file_exists($filePath)) {
+            $this->logError("JS-bestand ontbreekt: {$filePath}");
             return;
         }
 
         wp_enqueue_script(
-            $this->generate_handle($relative_path),
-            $file_url,
+            $this->generateAssetHandle($relativePath),
+            $fileUrl,
             $dependencies,
-            filemtime($file_path),
-            $in_footer
+            (string) filemtime($filePath),
+            $inFooter
         );
     }
 
-    private function enqueue_style(string $relative_path): void
+    /**
+     * Enqueue a CSS file
+     * 
+     * @param string $relativePath Path relative to plugin directory
+     * @return void
+     */
+    private function enqueueStyle(string $relativePath): void
     {
-        $file_path = $this->plugin_path . $relative_path;
-        $file_url  = $this->plugin_url . $relative_path;
+        $filePath = $this->pluginPath . $relativePath;
+        $fileUrl = $this->pluginUrl . $relativePath;
 
-        if (!file_exists($file_path)) {
-            $this->log_error("CSS-bestand ontbreekt: {$file_path}");
+        if (!file_exists($filePath)) {
+            $this->logError("CSS-bestand ontbreekt: {$filePath}");
             return;
         }
 
         wp_enqueue_style(
-            $this->generate_handle($relative_path),
-            $file_url,
+            $this->generateAssetHandle($relativePath),
+            $fileUrl,
             [],
-            filemtime($file_path)
+            (string) filemtime($filePath)
         );
     }
 
-    private function generate_handle(string $file_path): string
+    /**
+     * Generate a unique handle for assets
+     * 
+     * @param string $filePath File path to generate handle from
+     * @return string Sanitized handle
+     */
+    private function generateAssetHandle(string $filePath): string
     {
-        return sanitize_key(self::TEXT_DOMAIN . '-' . pathinfo($file_path, PATHINFO_FILENAME));
+        $filename = pathinfo($filePath, PATHINFO_FILENAME);
+        return sanitize_key(self::TEXT_DOMAIN . '-' . $filename);
     }
 
-    private function log_error(string $message): void
+    /**
+     * Log error messages
+     * 
+     * @param string $message Error message to log
+     * @return void
+     */
+    private function logError(string $message): void
     {
         error_log("[Egaline Calculator] {$message}");
     }
 
-    public function check_dependencies(): void
+    /**
+     * Check if required dependencies are available
+     * 
+     * @return void
+     */
+    public function checkDependencies(): void
     {
         if (!class_exists('WooCommerce')) {
-            add_action('admin_notices', fn() => $this->display_dependency_notice());
+            add_action('admin_notices', $this->displayDependencyNotice(...));
         }
     }
 
-    private function display_dependency_notice(): void
+    /**
+     * Display admin notice for missing dependencies
+     * 
+     * @return void
+     */
+    private function displayDependencyNotice(): void
     {
         $message = __('Egaline Calculator vereist WooCommerce om te werken.', self::TEXT_DOMAIN);
-        printf('<div class="notice notice-error"><p>%s</p></div>', esc_html($message));
+        
+        printf(
+            '<div class="notice notice-error is-dismissible"><p><strong>%s</strong></p></div>',
+            esc_html($message)
+        );
     }
 }
 
-new Egaline_Calculator_Init();
+// Initialize the plugin
+new EgalineCalculatorInit();

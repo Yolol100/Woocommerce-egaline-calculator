@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 defined('ABSPATH') || exit;
 
-final class Egaline_Calculator_Cart
+readonly final class Egaline_Calculator_Cart
 {
     public function __construct()
     {
         add_filter('woocommerce_add_cart_item_data', [$this, 'add_calculator_data_to_cart'], 10, 2);
-        add_action('woocommerce_before_calculate_totals', [$this, 'update_cart_item_price'], 99, 1);
+        add_action('woocommerce_before_calculate_totals', [$this, 'update_cart_item_price'], 99);
         add_filter('woocommerce_get_item_data', [$this, 'display_calculator_data_in_cart'], 10, 2);
         add_action('woocommerce_checkout_create_order_line_item', [$this, 'add_calculator_data_to_order_items'], 10, 4);
         add_action('woocommerce_cart_item_class', [$this, 'add_cart_item_class'], 10, 3);
@@ -42,51 +43,51 @@ final class Egaline_Calculator_Cart
             return $cart_item_data;
         }
 
-        $kg_per_bag = (float) get_post_meta($product_id, '_kg_per_bag', true) ?: 15;
-        $kg_per_mm  = (float) get_post_meta($product_id, '_kg_per_mm', true) ?: 0;
-        $kg_per_m2  = (float) get_post_meta($product_id, '_kg_per_m2', true) ?: 0;
+        $kg_per_bag = (float) get_post_meta($product_id, '_kg_per_bag', true) ?: 15.0;
+        $kg_per_mm = (float) get_post_meta($product_id, '_kg_per_mm', true) ?: 0.0;
+        $kg_per_m2 = (float) get_post_meta($product_id, '_kg_per_m2', true) ?: 0.0;
 
         $thickness = isset($_POST['egaline_mm'])
             ? (float) sanitize_text_field((string) $_POST['egaline_mm'])
-            : 0;
+            : 0.0;
         $area = isset($_POST['egaline_m2'])
             ? (float) sanitize_text_field((string) $_POST['egaline_m2'])
-            : 0;
+            : 0.0;
 
         $needed_kg = ($thickness * $area * $kg_per_mm) + ($area * $kg_per_m2);
-        $bags      = (int) ceil($needed_kg / $kg_per_bag);
+        $bags = (int) ceil($needed_kg / $kg_per_bag);
 
-        $product       = wc_get_product($product_id);
+        $product = wc_get_product($product_id);
         $regular_price = (float) $product->get_price();
 
-        if (isset($_POST['variation_id']) && $_POST['variation_id'] != 0) {
+        if (isset($_POST['variation_id']) && (int) $_POST['variation_id'] !== 0) {
             $variation = wc_get_product((int) $_POST['variation_id']);
             if ($variation) {
                 $regular_price = (float) $variation->get_price();
             }
         }
 
-        $original_total    = $bags * $regular_price;
+        $original_total = $bags * $regular_price;
         $discount_threshold = (int) get_post_meta($product_id, '_discount_threshold', true);
         $discount_percentage = (float) get_post_meta($product_id, '_discount_percentage', true);
-        $discount_amount   = 0;
-        $final_total       = $original_total;
+        $discount_amount = 0.0;
+        $final_total = $original_total;
 
-        if ($bags >= $discount_threshold && $discount_percentage > 0) {
+        if ($bags >= $discount_threshold && $discount_percentage > 0.0) {
             $discount_amount = $original_total * ($discount_percentage / 100);
-            $final_total     = $original_total - $discount_amount;
+            $final_total = $original_total - $discount_amount;
         }
 
         $cart_item_data['calculator_data'] = [
-            'needed_kg'           => $needed_kg,
-            'bags'                => $bags,
-            'total_price'         => $final_total,
-            'kg_per_bag'          => $kg_per_bag,
-            'thickness'           => $thickness,
-            'area'                => $area,
-            'discount_threshold'  => $discount_threshold,
+            'needed_kg' => $needed_kg,
+            'bags' => $bags,
+            'total_price' => $final_total,
+            'kg_per_bag' => $kg_per_bag,
+            'thickness' => $thickness,
+            'area' => $area,
+            'discount_threshold' => $discount_threshold,
             'discount_percentage' => $discount_percentage,
-            'discount_amount'     => $discount_amount,
+            'discount_amount' => $discount_amount,
         ];
 
         return $cart_item_data;
@@ -175,21 +176,21 @@ final class Egaline_Calculator_Cart
 
             if (isset($d['needed_kg'])) {
                 $item_data[] = [
-                    'name'  => __('Benodigde hoeveelheid (kg)', 'egaline'),
+                    'name' => __('Benodigde hoeveelheid (kg)', 'egaline'),
                     'value' => sprintf('%.2f kg', $d['needed_kg'] * $q),
                 ];
             }
 
             if (isset($d['bags'])) {
                 $item_data[] = [
-                    'name'  => __('Aantal zakken', 'egaline'),
+                    'name' => __('Aantal zakken', 'egaline'),
                     'value' => sprintf('%d (%d kg per zak)', $d['bags'] * $q, $d['kg_per_bag']),
                 ];
             }
 
             if (isset($d['discount_amount']) && $d['discount_amount'] > 0) {
                 $item_data[] = [
-                    'name'  => __('Korting toegepast', 'egaline'),
+                    'name' => __('Korting toegepast', 'egaline'),
                     'value' => sprintf('-€ %.2f', $d['discount_amount'] * $q),
                 ];
             }
@@ -197,8 +198,12 @@ final class Egaline_Calculator_Cart
         return $item_data;
     }
 
-    public function add_calculator_data_to_order_items($item, $cart_item_key, array $values, $order): void
-    {
+    public function add_calculator_data_to_order_items(
+        WC_Order_Item_Product $item,
+        string $cart_item_key,
+        array $values,
+        WC_Order $order
+    ): void {
         if (isset($values['calculator_data'])) {
             $d = $values['calculator_data'];
             $q = (int) ($values['quantity'] ?? 1);
