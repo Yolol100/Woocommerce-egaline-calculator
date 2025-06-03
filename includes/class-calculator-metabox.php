@@ -14,12 +14,12 @@ use function current_user_can;
 use function filter_var;
 use function filemtime;
 use function get_post_meta;
-use function in_array;
 use function plugin_dir_path;
 use function plugin_dir_url;
 use function sanitize_text_field;
 use function update_post_meta;
 use function wp_enqueue_script;
+use function wp_enqueue_style;
 use function wp_verify_nonce;
 
 final readonly class EgalineCalculatorMetabox
@@ -39,11 +39,21 @@ final readonly class EgalineCalculatorMetabox
         'action' => 'egaline_save_calculator_settings',
     ];
 
-
     public function __construct()
     {
-        add_action('woocommerce_product_options_general_product_data', $this->renderMetaboxFields(...));
-        add_action('woocommerce_process_product_meta', $this->persistMetaboxData(...));
+        add_action('woocommerce_product_options_general_product_data', [$this, 'renderMetaboxFields']);
+        add_action('woocommerce_process_product_meta', [$this, 'persistMetaboxData']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
+    }
+
+    public function enqueueAdminAssets(): void
+    {
+        wp_enqueue_style(
+            'egaline-calculator-admin',
+            plugin_dir_url(__FILE__) . '../assets/css/admin-metabox.css',
+            [],
+            (string) filemtime(plugin_dir_path(__FILE__) . '../assets/css/admin-metabox.css')
+        );
     }
 
     public function renderMetaboxFields(): void
@@ -55,16 +65,12 @@ final readonly class EgalineCalculatorMetabox
             'kg_per_bag'          => $this->getMetaValue($post->ID, self::META_KEYS['kg_bag'], 1.0),
             'kg_per_mm'           => $this->getMetaValue($post->ID, self::META_KEYS['kg_mm']),
             'kg_per_m2'           => $this->getMetaValue($post->ID, self::META_KEYS['kg_m2']),
-            'calculation_mode'    => $this->getMetaValue(
-                $post->ID,
-                self::META_KEYS['mode'],
-                'kg_per_mm'
-            ),
+            'calculation_mode'    => $this->getMetaValue($post->ID, self::META_KEYS['mode'], 'kg_per_mm'),
             'discount_threshold'  => $this->getMetaValue($post->ID, self::META_KEYS['discount_threshold']),
             'discount_percentage' => $this->getMetaValue($post->ID, self::META_KEYS['discount_percentage']),
         ];
 
-        require_once plugin_dir_path(__FILE__) . '../templates/metabox-calculator.php';
+        require plugin_dir_path(__FILE__) . '../templates/metabox-calculator.php';
     }
 
     public function persistMetaboxData(int $postId): void
@@ -74,11 +80,7 @@ final readonly class EgalineCalculatorMetabox
         }
 
         foreach (self::META_KEYS as $key => $metaKey) {
-            $value = $_POST[$metaKey] ?? match ($metaKey) {
-                self::META_KEYS['enable'] => 'no',
-                default => '',
-            };
-
+            $value = $_POST[$metaKey] ?? ($metaKey === self::META_KEYS['enable'] ? 'no' : '');
             $this->updateMetaField($postId, $metaKey, $value);
         }
     }
