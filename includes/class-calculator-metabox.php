@@ -20,6 +20,7 @@ use function plugin_dir_url;
 use function sanitize_text_field;
 use function update_post_meta;
 use function wp_enqueue_script;
+use function wp_enqueue_style;
 use function wp_verify_nonce;
 
 final readonly class EgalineCalculatorMetabox
@@ -39,26 +40,21 @@ final readonly class EgalineCalculatorMetabox
         'action' => 'egaline_save_calculator_settings',
     ];
 
-    private const CALCULATION_MODES = [
-        'PER_MM' => 'kg_per_mm',
-        'PER_M2' => 'kg_per_m2',
-    ];
 
     public function __construct()
     {
-        add_action('woocommerce_product_options_general_product_data', $this->renderMetaboxFields(...));
-        add_action('woocommerce_process_product_meta', $this->persistMetaboxData(...));
-        add_action('admin_enqueue_scripts', $this->enqueueAdminScripts(...));
+        add_action('woocommerce_product_options_general_product_data', [$this, 'renderMetaboxFields']);
+        add_action('woocommerce_process_product_meta', [$this, 'persistMetaboxData']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
     }
 
-    public function enqueueAdminScripts(): void
+    public function enqueueAdminAssets(): void
     {
-        wp_enqueue_script(
-            'egaline-calculator-metabox',
-            plugin_dir_url(__FILE__) . '../assets/js/admin-calculator.js',
-            ['jquery'],
-            (string) filemtime(plugin_dir_path(__FILE__) . '../assets/js/admin-calculator.js'),
-            true
+        wp_enqueue_style(
+            'egaline-calculator-admin',
+            plugin_dir_url(__FILE__) . '../assets/css/admin-metabox.css',
+            [],
+            (string) filemtime(plugin_dir_path(__FILE__) . '../assets/css/admin-metabox.css')
         );
     }
 
@@ -74,13 +70,13 @@ final readonly class EgalineCalculatorMetabox
             'calculation_mode'    => $this->getMetaValue(
                 $post->ID,
                 self::META_KEYS['mode'],
-                self::CALCULATION_MODES['PER_MM']
+                'kg_per_mm'
             ),
             'discount_threshold'  => $this->getMetaValue($post->ID, self::META_KEYS['discount_threshold']),
             'discount_percentage' => $this->getMetaValue($post->ID, self::META_KEYS['discount_percentage']),
         ];
 
-        require_once plugin_dir_path(__FILE__) . '../templates/metabox-calculator.php';
+        require plugin_dir_path(__FILE__) . '../templates/metabox-calculator.php';
     }
 
     public function persistMetaboxData(int $postId): void
@@ -121,9 +117,7 @@ final readonly class EgalineCalculatorMetabox
             self::META_KEYS['kg_m2'],
             self::META_KEYS['discount_percentage'] => filter_var($value, FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => 0]]),
 
-            self::META_KEYS['mode'] => in_array($value, array_values(self::CALCULATION_MODES), true)
-                ? $value
-                : self::CALCULATION_MODES['PER_MM'],
+            self::META_KEYS['mode'] => 'kg_per_mm',
 
             default => sanitize_text_field((string) $value),
         };

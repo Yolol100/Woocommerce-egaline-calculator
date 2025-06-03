@@ -1,0 +1,21 @@
+.options-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem 2rem;
+  margin-top: 1rem;
+}
+
+.options-group .form-field {
+  margin: 0;
+}
+
+.options-group label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.options-group input[type="number"],
+.options-group select {
+  width: 100%;
+}

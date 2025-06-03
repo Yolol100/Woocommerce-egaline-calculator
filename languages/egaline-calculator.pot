@@ -45,8 +45,6 @@ msgstr ""
 msgid "Hoe dik egaliseren in mm?"
 msgstr ""
 
-msgid "Aantal lagen in mm"
-msgstr ""
 
 msgid "Aantal m² egaliseren?"
 msgstr ""
@@ -75,8 +73,6 @@ msgstr ""
 msgid "Kg per mm"
 msgstr ""
 
-msgid "Lagen per mm"
-msgstr ""
 
 msgid "Kg per zak"
 msgstr ""
