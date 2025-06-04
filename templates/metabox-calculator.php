@@ -39,6 +39,9 @@ if (!defined('ABSPATH')) {
             <option value="kg_per_mm" <?php selected($meta_values['calculation_mode'], 'kg_per_mm'); ?>>
                 <?php esc_html_e('Kg per mm', 'egaline-calculator'); ?>
             </option>
+            <option value="kg_per_m2" <?php selected($meta_values['calculation_mode'], 'kg_per_m2'); ?>>
+                <?php esc_html_e('Kg per m²', 'egaline-calculator'); ?>
+            </option>
             <option value="layers_per_mm" <?php selected($meta_values['calculation_mode'], 'layers_per_mm'); ?>>
                 <?php esc_html_e('Lagen per mm', 'egaline-calculator'); ?>
             </option>
@@ -49,7 +52,7 @@ if (!defined('ABSPATH')) {
     </div>
 
     <!-- Label en input voor Kg per mm of Lagen per mm -->
-    <div class="form-field">
+    <div class="form-field" id="field_kg_per_mm">
         <label for="kg_per_mm" id="label_kg_per_mm" class="form-label">
             <?php echo ($meta_values['calculation_mode'] === 'kg_per_mm')
                 ? esc_html__('Kg per mm', 'egaline-calculator')
@@ -85,7 +88,7 @@ if (!defined('ABSPATH')) {
     </div>
 
     <!-- Kg per m² -->
-    <div class="form-field">
+    <div class="form-field" id="field_kg_per_m2">
         <label for="kg_per_m2" class="form-label">
             <?php esc_html_e('Kg per m²', 'egaline-calculator'); ?>
         </label>

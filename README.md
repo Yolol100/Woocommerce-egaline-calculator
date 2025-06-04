@@ -13,7 +13,7 @@ A powerful and highly customizable WooCommerce extension that adds an intelligen
 - **Dynamic Quantity Calculation**: Automatically calculates required material based on thickness (mm), area (m²), and bag count
 - **Smart Dependencies**: Intelligent adjustment system where thickness changes update area and bag count accordingly
 - **Real-time Updates**: Instant feedback with live calculation updates as users adjust parameters
-- **Multiple Calculation Modes**: Support for various material calculation methods (kg per mm, alternative modes)
+- **Multiple Calculation Modes**: Support for kg per mm, kg per m² and layers per mm calculations
 
 ### 💰 **Smart Price Calculation**
 - **Dynamic Pricing**: Real-time total price updates based on calculated quantities
@@ -87,3 +87,4 @@ git clone https://github.com/yolol100/egaline-calculator.git
 cd egaline-calculator
 ```
 Activate the plugin from the WordPress admin.
+
