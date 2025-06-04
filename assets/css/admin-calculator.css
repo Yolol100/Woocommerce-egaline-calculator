@@ -1,0 +1,5 @@
+.form-field .form-input,
+.form-field .form-select {
+    width: 100%;
+    max-width: 400px;
+}

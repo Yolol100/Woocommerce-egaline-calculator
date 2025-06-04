@@ -36,6 +36,7 @@ $calculation_mode ??= 'kg_per_mm';
          data-kg-per-bag="<?= esc_attr($kg_per_bag) ?>"
          data-kg-per-mm="<?= esc_attr($kg_per_mm) ?>"
          data-kg-per-m2="<?= esc_attr($kg_per_m2) ?>"
+         data-calculation-mode="<?= esc_attr($calculation_mode) ?>"
          data-regular-price="<?= esc_attr($regular_price) ?>"
          data-variation-price="<?= esc_attr($regular_price) ?>"
          data-variation-id="<?= esc_attr($variation_id) ?>"
