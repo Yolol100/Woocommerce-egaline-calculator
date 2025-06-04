@@ -7,12 +7,6 @@
 
 declare(strict_types=1);
 
-use function esc_html_e;
-use function wp_nonce_field;
-use function woocommerce_wp_checkbox;
-use function woocommerce_wp_select;
-use function woocommerce_wp_text_input;
-
 if (!defined('ABSPATH')) {
     exit;
 }
