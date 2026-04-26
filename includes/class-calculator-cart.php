@@ -93,6 +93,7 @@ readonly final class Egaline_Calculator_Cart
     {
         foreach ($cart_contents as &$cart_item) {
             if ($this->cart_item_has_valid_calculator_data($cart_item)) {
+                $cart_item['data'] = clone $cart_item['data'];
                 $cart_item['data']->set_price((float) $cart_item['calculator_data']['total_price']);
             }
         }
