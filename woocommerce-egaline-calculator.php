@@ -10,6 +10,7 @@
  * Domain Path: /languages
  * Requires PHP: 8.2
  * Requires at least: 6.4
+ * Tested up to: 6.7
  * Requires Plugins: woocommerce
  * WC requires at least: 8.0
  * WC tested up to: 9.4
@@ -31,10 +32,12 @@ use function filemtime;
 use function is_product;
 use function is_readable;
 use function pathinfo;
+use function plugin_basename;
 use function plugin_dir_path;
 use function plugin_dir_url;
 use function printf;
 use function sanitize_key;
+use function load_plugin_textdomain;
 use function wp_enqueue_script;
 use function wp_enqueue_style;
 
@@ -118,6 +121,21 @@ final readonly class EgalineCalculatorInit
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
         add_action('plugins_loaded', [$this, 'checkDependencies']);
+        add_action('plugins_loaded', [$this, 'loadTextDomain']);
+    }
+
+    /**
+     * Load plugin translations
+     *
+     * @return void
+     */
+    public function loadTextDomain(): void
+    {
+        load_plugin_textdomain(
+            self::TEXT_DOMAIN,
+            false,
+            dirname(plugin_basename(__FILE__)) . '/languages'
+        );
     }
 
     /**
@@ -137,7 +155,9 @@ final readonly class EgalineCalculatorInit
             inFooter: true
         );
 
-        wp_set_script_translations($handle, self::TEXT_DOMAIN, $this->pluginPath . 'languages');
+        if ($handle !== '') {
+            wp_set_script_translations($handle, self::TEXT_DOMAIN, $this->pluginPath . 'languages');
+        }
         
         $this->enqueueStyle('assets/css/calculator.css');
     }

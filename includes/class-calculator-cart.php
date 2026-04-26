@@ -84,6 +84,10 @@ readonly final class Egaline_Calculator_Cart
                 continue;
             }
 
+            if (!isset($cart_item['data']) || !$cart_item['data'] instanceof WC_Product) {
+                continue;
+            }
+
             $cart_item['data'] = clone $cart_item['data'];
             $cart_item['data']->set_price((float) $cart_item['calculator_data']['total_price']);
         }
@@ -93,6 +97,11 @@ readonly final class Egaline_Calculator_Cart
     {
         foreach ($cart_contents as &$cart_item) {
             if ($this->cart_item_has_valid_calculator_data($cart_item)) {
+                if (!isset($cart_item['data']) || !$cart_item['data'] instanceof WC_Product) {
+                    continue;
+                }
+
+                $cart_item['data'] = clone $cart_item['data'];
                 $cart_item['data']->set_price((float) $cart_item['calculator_data']['total_price']);
             }
         }
@@ -187,7 +196,9 @@ readonly final class Egaline_Calculator_Cart
     {
         if (isset($values['calculator_data']) && $this->is_valid_calculator_data($values['calculator_data'])) {
             $cart_item['calculator_data'] = $values['calculator_data'];
-            $product = wc_get_product($cart_item['variation_id'] ?: $cart_item['product_id']);
+            $variation_id = (int) ($cart_item['variation_id'] ?? 0);
+            $product_id = (int) ($cart_item['product_id'] ?? 0);
+            $product = wc_get_product($variation_id ?: $product_id);
 
             if ($product instanceof WC_Product) {
                 $cart_item['data'] = clone $product;
