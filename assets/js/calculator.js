@@ -120,6 +120,8 @@ jQuery(document).ready(($) => {
       updateLabel();
     };
 
+    const getRequiredKgFactor = () => KG_PER_M2 + ((parseFloat($inputs.egalineMm.val()) || 0) * KG_PER_MM);
+
     // Calculator uitschakelen (voor variabele producten zonder geselecteerde variatie)
     const disableCalculator = () => {
       calculator.addClass("calculator-disabled");
@@ -223,8 +225,11 @@ jQuery(document).ready(($) => {
           areaVal = 1;
           $inputs.egalineM2.val("1").trigger("change");
         } else {
-          const newM2 = (sacksVal * BAG_WEIGHT) / (thickness * KG_PER_MM + KG_PER_M2);
-          $inputs.egalineM2.val(parseFloat(newM2.toFixed(2)).toString()).trigger("change");
+          const requiredKgFactor = getRequiredKgFactor();
+          if (requiredKgFactor > 0) {
+            const newM2 = (sacksVal * BAG_WEIGHT) / requiredKgFactor;
+            $inputs.egalineM2.val(parseFloat(newM2.toFixed(2)).toString()).trigger("change");
+          }
         }
       }
       updateResults();
@@ -239,9 +244,9 @@ jQuery(document).ready(($) => {
       lastEdited = "sacks";
       const val = parseInt($inputs.resultBags.val(), 10) || 0;
       manualOverride = val > 0;
-      const thickness = parseFloat($inputs.egalineMm.val()) || 0;
-      const newM2 = (val * BAG_WEIGHT) / (thickness * KG_PER_MM + KG_PER_M2);
-      if (!isNaN(newM2) && newM2 > 0) {
+      const requiredKgFactor = getRequiredKgFactor();
+      const newM2 = requiredKgFactor > 0 ? (val * BAG_WEIGHT) / requiredKgFactor : NaN;
+      if (!isNaN(newM2) && isFinite(newM2) && newM2 > 0) {
         $inputs.egalineM2.val(parseFloat(newM2.toFixed(2)).toString()).trigger("change");
       }
       updateResults();

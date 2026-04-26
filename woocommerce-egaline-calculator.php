@@ -10,6 +10,7 @@
  * Domain Path: /languages
  * Requires PHP: 8.2
  * Requires at least: 6.4
+ * Tested up to: 6.7
  * Requires Plugins: woocommerce
  * WC requires at least: 8.0
  * WC tested up to: 9.4
@@ -137,7 +138,9 @@ final readonly class EgalineCalculatorInit
             inFooter: true
         );
 
-        wp_set_script_translations($handle, self::TEXT_DOMAIN, $this->pluginPath . 'languages');
+        if ($handle !== '') {
+            wp_set_script_translations($handle, self::TEXT_DOMAIN, $this->pluginPath . 'languages');
+        }
         
         $this->enqueueStyle('assets/css/calculator.css');
     }
