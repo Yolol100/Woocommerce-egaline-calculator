@@ -71,13 +71,13 @@ if (!class_exists('Egaline_Calculator_Display')) {
 
         private function get_default_variation(WC_Product $product): ?array
         {
-            foreach ($product->get_available_variations() as $variation) {
+            $variations = $product->get_available_variations();
+
+            foreach ($variations as $variation) {
                 if (!empty($variation['is_default'])) {
                     return $variation;
                 }
             }
-
-            $variations = $product->get_available_variations();
 
             return $variations[0] ?? null;
         }
