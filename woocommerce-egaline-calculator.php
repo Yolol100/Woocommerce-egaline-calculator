@@ -138,7 +138,9 @@ final readonly class EgalineCalculatorInit
             inFooter: true
         );
 
-        wp_set_script_translations($handle, self::TEXT_DOMAIN, $this->pluginPath . 'languages');
+        if ($handle !== '') {
+            wp_set_script_translations($handle, self::TEXT_DOMAIN, $this->pluginPath . 'languages');
+        }
         
         $this->enqueueStyle('assets/css/calculator.css');
     }
