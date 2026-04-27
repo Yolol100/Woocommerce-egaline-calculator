@@ -44,12 +44,9 @@ jQuery(document).ready(($) => {
     const KG_PER_MM = parseFloat(calculator.data("kg-per-mm")) || 0;
     const KG_PER_M2 = parseFloat(calculator.data("kg-per-m2")) || 0;
     const BAG_WEIGHT = parseFloat(calculator.data("kg-per-bag")) || config.defaultKgPerBag;
-    const calculationMode = "kg_per_mm";
-
     const discountThreshold = parseInt(calculator.data("discount-threshold"), 10) || 0;
     const discountPercentage = parseFloat(calculator.data("discount-percentage")) || 0;
 
-    let lastEdited = null;
     let manualOverride = false;
 
     const formatNumber = (number) => Math.round(number).toString();
@@ -145,21 +142,6 @@ jQuery(document).ready(($) => {
       disableCalculator();
     }
 
-    // Event bij selectie van variatie
-    $("form.variations_form").on("found_variation", (event, variation) => {
-      $(".egaline-calculator").each(function () {
-        const $calc = $(this);
-        if ($calc.data("product-type") === "variable") {
-          enableCalculator();
-          $calc.find(".calculator-variation-id").val(variation.variation_id);
-          $calc.find(".egaline-mm, .egaline-m2, .result-bags").val(0).trigger("change");
-          $calc.find(".result-kg").text("0");
-          $calc.find(".total-price-value").text("0 EUR");
-        }
-      });
-      $(".calculator-warning").hide();
-    });
-
     // Waarschuwing bij focus als calculator uitgeschakeld is
     const warnIfDisabled = function () {
       if (productType === "variable" && !$inputs.variationId.val()) {
@@ -177,46 +159,8 @@ jQuery(document).ready(($) => {
     $inputs.egalineM2.on("focus", warnIfDisabled);
     $inputs.resultBags.on("focus", warnIfDisabled);
 
-    // Validatie van invoervelden
-    const validateFields = () => {
-      let isValid = true;
-      $inputs.egalineMm.each(function () {
-        if ($(this).val() === "") {
-          $(this).css("border", "1px solid red").attr("aria-invalid", "true");
-          isValid = false;
-        } else {
-          $(this).css("border", "").attr("aria-invalid", "false");
-        }
-      });
-      $inputs.egalineM2.each(function () {
-        if ($(this).val() === "") {
-          $(this).css("border", "1px solid red").attr("aria-invalid", "true");
-          isValid = false;
-        } else {
-          $(this).css("border", "").attr("aria-invalid", "false");
-        }
-      });
-      $inputs.resultBags.each(function () {
-        if ($(this).val() === "") {
-          $(this).css("border", "1px solid red").attr("aria-invalid", "true");
-          isValid = false;
-        } else {
-          $(this).css("border", "").attr("aria-invalid", "false");
-        }
-      });
-      if (!isValid) {
-        showCalcError(
-          calculator,
-          __("Vul alle velden in voordat u verder gaat!", "egaline-calculator")
-        );
-      }
-      return isValid;
-    };
-
-
     // Event handlers voor invoervelden
     $inputs.egalineMm.on("input change", () => {
-      lastEdited = "mm";
       const thickness = parseFloat($inputs.egalineMm.val()) || 0;
       let areaVal = parseFloat($inputs.egalineM2.val()) || 0;
       let sacksVal = parseInt($inputs.resultBags.val(), 10) || 0;
@@ -236,12 +180,10 @@ jQuery(document).ready(($) => {
     });
 
     $inputs.egalineM2.on("input change", () => {
-      lastEdited = "m2";
       updateResults();
     });
 
     $inputs.resultBags.on("input change", () => {
-      lastEdited = "sacks";
       const val = parseInt($inputs.resultBags.val(), 10) || 0;
       manualOverride = val > 0;
       const requiredKgFactor = getRequiredKgFactor();
@@ -435,6 +377,7 @@ jQuery(document).ready(($) => {
           $(this).find(".calc-variation-price").html(`(${cleanPrice})`).show();
           $(this).find(".calculator-variation-id").val(variation.variation_id);
           $(this).removeClass("calculator-disabled");
+          $(this).find(".egaline-mm, .egaline-m2, .result-bags, .qty-btn").prop("disabled", false).css("opacity", "1");
           $(this).find(".egaline-mm, .egaline-m2, .result-bags").val(0).trigger("change");
           $(this).find(".result-kg").text("0");
           $(this).find(".total-price-value").text("0 EUR");
@@ -467,6 +410,11 @@ jQuery(document).ready(($) => {
   $variationsForm.on("reset_data", () => {
     $(".egaline-calculator").each(function () {
       $(this).trigger("resetCalculator");
+      if ($(this).data("product-type") === "variable") {
+        $(this).addClass("calculator-disabled");
+        $(this).find(".calculator-variation-id").val("");
+        $(this).find(".egaline-mm, .egaline-m2, .result-bags, .qty-btn").prop("disabled", true).css("opacity", "0.5");
+      }
     });
     $(".calculator-warning").show();
   });
