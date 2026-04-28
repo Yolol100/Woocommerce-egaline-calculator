@@ -96,9 +96,9 @@ This plugin is licensed under GPL v2 or later.
 
 ## Compatibility
 
-- Requires at least: WordPress 6.4
-- Tested up to: WordPress 6.7
+- Requires at least: WordPress 6.8
+- Tested up to: WordPress 6.9.4
 - Requires PHP: 8.2
 - Requires Plugins: WooCommerce
 - WC requires at least: 8.0
-- WC tested up to: 9.4
+- WC tested up to: 10.7.0
