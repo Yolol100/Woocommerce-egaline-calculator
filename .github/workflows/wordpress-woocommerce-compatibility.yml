@@ -111,7 +111,13 @@ jobs:
         run: |
           set -euo pipefail
           log=/tmp/egaline-runtime/wp-content/debug.log
-          if [[ -f "$log" ]] && grep -Eqi 'PHP (Fatal error|Parse error|Warning|Deprecated|Notice)' "$log"; then
-            cat "$log"
+          if [[ ! -f "$log" ]]; then
+            exit 0
+          fi
+
+          filtered=/tmp/egaline-debug-filtered.log
+          grep -Ev '_load_textdomain_just_in_time.*woocommerce.*triggered too early' "$log" > "$filtered" || true
+          if grep -Eqi 'PHP (Fatal error|Parse error|Warning|Deprecated|Notice)' "$filtered"; then
+            cat "$filtered"
             exit 1
           fi
