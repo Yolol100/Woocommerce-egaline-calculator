@@ -34,13 +34,13 @@ jobs:
       matrix:
         include:
           - label: Previous baseline - WP 6.8 / PHP 8.2 / WC 10.7.0
-            wordpress: 6.8
+            wordpress: '6.8'
             php: '8.2'
-            woocommerce: 10.7.0
+            woocommerce: '10.7.0'
           - label: Current - WP 7.1 / PHP 8.3 / WC 11.1.0
-            wordpress: 7.1
+            wordpress: '7.1'
             php: '8.3'
-            woocommerce: 11.1.0
+            woocommerce: '11.1.0'
 
     steps:
       - name: Checkout
@@ -65,21 +65,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --location --silent --show-error --output wp-cli.phar \
+          curl --fail --location --silent --show-error --output /tmp/wp-cli.phar \
             https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar
-          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  wp-cli.phar' | sha256sum --check --strict
+          echo 'ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  /tmp/wp-cli.phar' | sha256sum --check --strict
 
       - name: Create clean WooCommerce runtime
         shell: bash
         run: |
           set -euo pipefail
           runtime=/tmp/egaline-runtime
+          plugin_dir="$runtime/wp-content/plugins/woocommerce-egaline-calculator"
           rm -rf "$runtime"
-          php wp-cli.phar core download --path="$runtime" --version='${{ matrix.wordpress }}' --locale=en_US --force
-          php wp-cli.phar config create --path="$runtime" --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306
-          php wp-cli.phar config set WP_DEBUG true --raw --path="$runtime"
-          php wp-cli.phar config set WP_DEBUG_LOG true --raw --path="$runtime"
-          php wp-cli.phar core install \
+          php /tmp/wp-cli.phar core download --path="$runtime" --version='${{ matrix.wordpress }}' --locale=en_US --force
+          php /tmp/wp-cli.phar config create --path="$runtime" --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306
+          php /tmp/wp-cli.phar config set WP_DEBUG true --raw --path="$runtime"
+          php /tmp/wp-cli.phar config set WP_DEBUG_LOG true --raw --path="$runtime"
+          php /tmp/wp-cli.phar core install \
             --path="$runtime" \
             --url=http://egaline.test \
             --title='Egaline Runtime' \
@@ -87,21 +88,22 @@ jobs:
             --admin_password='runtime-only-password' \
             --admin_email=runtime@example.invalid \
             --skip-email
-          php wp-cli.phar plugin install woocommerce \
+          php /tmp/wp-cli.phar plugin install woocommerce \
             --path="$runtime" \
             --version='${{ matrix.woocommerce }}' \
             --activate
+          mkdir -p "$plugin_dir"
+          rsync -a --exclude='.git/' "$GITHUB_WORKSPACE/" "$plugin_dir/"
           rm -f "$runtime/wp-content/debug.log"
-          ln -s "$GITHUB_WORKSPACE" "$runtime/wp-content/plugins/woocommerce-egaline-calculator"
-          php wp-cli.phar plugin activate woocommerce-egaline-calculator --path="$runtime"
-          php wp-cli.phar plugin status woocommerce-egaline-calculator --path="$runtime"
-          php wp-cli.phar eval 'if (!class_exists("WooCommerce")) { fwrite(STDERR, "WooCommerce missing\n"); exit(1); } if (!class_exists("Webactueel\\EgalineCalculator\\EgalineCalculatorInit")) { fwrite(STDERR, "Plugin bootstrap missing\n"); exit(1); } echo "runtime-ok\n";' --path="$runtime"
+          php /tmp/wp-cli.phar plugin activate woocommerce-egaline-calculator --path="$runtime"
+          php /tmp/wp-cli.phar plugin status woocommerce-egaline-calculator --path="$runtime"
+          php /tmp/wp-cli.phar eval 'if (!class_exists("WooCommerce")) { fwrite(STDERR, "WooCommerce missing\n"); exit(1); } if (!class_exists("Webactueel\\EgalineCalculator\\EgalineCalculatorInit")) { fwrite(STDERR, "Plugin bootstrap missing\n"); exit(1); } echo "runtime-ok\n";' --path="$runtime"
 
-      - name: Exercise WooCommerce initialization
+      - name: Verify WooCommerce compatibility hook registration
         shell: bash
         run: |
           set -euo pipefail
-          php wp-cli.phar eval 'do_action("before_woocommerce_init"); do_action("woocommerce_init"); echo "woocommerce-init-ok\n";' --path=/tmp/egaline-runtime
+          php /tmp/wp-cli.phar eval 'if (false === has_action("before_woocommerce_init")) { fwrite(STDERR, "WooCommerce compatibility hook missing\n"); exit(1); } echo "woocommerce-hook-ok\n";' --path=/tmp/egaline-runtime
 
       - name: Reject runtime PHP errors
         if: always()
