@@ -2,7 +2,7 @@
 
 WooCommerce Egaline Calculator adds a product-specific material calculator to WooCommerce. Customers can calculate the required material from thickness and surface area, while the plugin carries the calculated quantity and pricing context through the cart, checkout and order workflow.
 
-The WordPress-style `readme.txt` is the canonical source for current compatibility and release metadata. This README provides the GitHub project overview.
+The plugin header and WordPress-style `readme.txt` contain the release metadata. This README provides the GitHub project overview.
 
 ## What it does
 
@@ -20,7 +20,7 @@ The WordPress-style `readme.txt` is the canonical source for current compatibili
 - PHP 8.2 or newer.
 - WooCommerce 8.0 or newer.
 
-The current release is `1.0.9`. The current compatibility matrix in `readme.txt` is tested through WordPress 7.1 and WooCommerce 11.1.0.
+The current release is `1.0.9`. These minimum requirements are consistent between the plugin header and `readme.txt`. Tested-version metadata is intentionally not duplicated here because release metadata should be kept aligned in the plugin header and `readme.txt` first.
 
 ## Installation
 
@@ -45,7 +45,7 @@ Variable products activate the calculator after WooCommerce has resolved a valid
 - `templates/` — plugin templates.
 - `languages/` — translation files.
 - `uninstall.php` — plugin cleanup logic.
-- `readme.txt` — canonical WordPress distribution and compatibility metadata.
+- `readme.txt` — WordPress distribution documentation and release metadata.
 
 ## License
 
