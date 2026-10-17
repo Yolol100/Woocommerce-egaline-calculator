@@ -2,7 +2,7 @@
 
 > **Supporting portfolio project · WordPress/PHP · WooCommerce · product calculation and checkout flow**
 
-**Developer profile:** [Andrew Baeten](https://github.com/Yolol100) · [Portfolio cases](https://andrewbaeten.nl/category/cases)
+**Developer profile:** [Andrew Baeten](https://github.com/Yolol100) · [GitHub project index](https://github.com/Yolol100?tab=repositories)
 
 WooCommerce Egaline Calculator adds a product-specific material calculator to WooCommerce. Customers can calculate the required material from thickness and surface area, while the plugin carries the calculated quantity and pricing context through the cart, checkout and order workflow.
 
