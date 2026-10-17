@@ -8,6 +8,18 @@ WooCommerce Egaline Calculator adds a product-specific material calculator to Wo
 
 The plugin header and WordPress-style `readme.txt` contain the release metadata. This README provides the GitHub project overview.
 
+## See the WooCommerce calculator
+
+| Product workflow | Plugin settings |
+| :---: | :---: |
+| [![WooCommerce Egaline Calculator product workflow screenshot](https://andrewbaeten.nl/wp-content/uploads/2026/04/WooCommerce-egaline-calculator-workflow-screen.png)](https://andrewbaeten.nl/egaline-calculator/) | [![WooCommerce Egaline Calculator settings screenshot](https://andrewbaeten.nl/wp-content/uploads/2026/04/WooCommerce-egaline-calculator-settings-screen.png)](https://andrewbaeten.nl/egaline-calculator/) |
+
+[View the illustrated WooCommerce calculator case study](https://andrewbaeten.nl/egaline-calculator/).
+
+**Why this helps shoppers:** people know the area and required layer thickness, but not always how many bags to order. The calculator turns those inputs into material quantities and carries the result into WooCommerce cart and order metadata. Actual pricing and conversion outcomes depend on the configured store.
+
+*Images are from the published portfolio case, not current live-store test or sales results.*
+
 ## What it does
 
 - Adds configurable calculator fields to selected WooCommerce products.
