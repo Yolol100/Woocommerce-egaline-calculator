@@ -55,6 +55,9 @@ jobs:
           coverage: none
           extensions: mysqli
 
+      - name: Check release metadata consistency
+        run: python3 tests/check_release_metadata.py
+
       - name: PHP syntax check
         shell: bash
         run: |
