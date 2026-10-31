@@ -10,10 +10,10 @@
  * Domain Path: /languages
  * Requires PHP: 8.2
  * Requires at least: 6.8
- * Tested up to: 6.9.4
+ * Tested up to: 7.1
  * Requires Plugins: woocommerce
  * WC requires at least: 8.0
- * WC tested up to: 10.7.0
+ * WC tested up to: 11.1.0
  * Network: false
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
