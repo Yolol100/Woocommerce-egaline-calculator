@@ -41,7 +41,7 @@ for plugin_key, readme_key in pairs.items():
 
 readme_text = (ROOT / "readme.txt").read_text(encoding="utf-8")
 changelog = readme_text.split("== Changelog ==", 1)[-1]
-versions = re.findall(r"^= (\\d+\\.\\d+\\.\\d+) =$", changelog, re.M)
+versions = re.findall(r"^= (\d+\.\d+\.\d+) =$", changelog, re.M)
 if not versions or versions[0] != plugin_field("Version"):
     raise SystemExit("Latest release must be the first changelog entry")
 if len(versions) != len(set(versions)):
