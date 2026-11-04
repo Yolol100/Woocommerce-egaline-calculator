@@ -67,4 +67,25 @@ foreach ( $nested_invalid as $label => $data ) {
     }
 }
 
+$product = new WC_Product_Simple();
+$product->set_price( '30' );
+$calculated = array_replace( $valid, array(
+    'discount_threshold' => 4,
+    'discount_percentage' => 10,
+    'discount_amount' => 0,
+) );
+$valid_cart = array( 'line' => array(
+    'product_id' => 123,
+    'quantity' => 2,
+    'data' => $product,
+    'calculator_data' => $calculated,
+) );
+$priced_cart = $calculator->fix_minicart_price_display( $valid_cart );
+$line = $priced_cart['line'];
+if ( abs( (float) $line['data']->get_price() - 54.0 ) > 0.00001
+    || abs( (float) $line['calculator_data']['discount_amount'] - 6.0 ) > 0.00001
+    || (float) $product->get_price() !== 30.0 ) {
+    throw new RuntimeException( 'Valid quantity-based cart discount changed.' );
+}
+
 echo "Egaline malformed cart item regression: OK\n";
