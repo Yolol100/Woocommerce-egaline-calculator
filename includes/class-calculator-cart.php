@@ -417,13 +417,19 @@ readonly final class Egaline_Calculator_Cart
 
     private function is_valid_calculator_data(array $data): bool
     {
-        return isset($data['needed_kg'], $data['bags'], $data['total_price'], $data['kg_per_bag'], $data['thickness'], $data['area'])
-            && (float) $data['needed_kg'] > 0
-            && (int) $data['bags'] >= 1
-            && (float) $data['total_price'] > 0
-            && (float) $data['kg_per_bag'] > 0
-            && (float) $data['thickness'] > 0
-            && (float) $data['area'] > 0;
+        foreach (['needed_kg', 'bags', 'total_price', 'kg_per_bag', 'thickness', 'area'] as $field) {
+            if (!isset($data[$field]) || !is_numeric($data[$field])) {
+                return false;
+            }
+
+            $number = (float) $data[$field];
+            if (!is_finite($number) || $number <= 0) {
+                return false;
+            }
+        }
+
+        $bags = (float) $data['bags'];
+        return $bags <= PHP_INT_MAX && floor($bags) === $bags;
     }
 }
 
