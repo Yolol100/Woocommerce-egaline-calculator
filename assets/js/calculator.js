@@ -118,7 +118,7 @@ jQuery(document).ready(($) => {
       const originalTotal = calculatedBags * pricePerBag;
       const multipliedOriginalTotal = originalTotal * quantity;
 
-      if (multipliedBags >= discountThreshold && discountPercentage > 0) {
+      if (discountThreshold > 0 && multipliedBags >= discountThreshold && discountPercentage > 0) {
         const discountAmount = multipliedOriginalTotal * (discountPercentage / 100);
         const discountedTotal = multipliedOriginalTotal - discountAmount;
         $inputs.totalPrice.text(config.showDiscountText ? `Korting: ${discountPercentage}% (${formatMoney(discountedTotal)}) EUR` : `${formatMoney(discountedTotal)} EUR`);
