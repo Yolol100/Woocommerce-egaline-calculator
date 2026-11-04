@@ -215,7 +215,7 @@ readonly final class Egaline_Calculator_Cart
 
     public function restore_cart_item_data(array $cart_item, array $values): array
     {
-        if (isset($values['calculator_data']) && $this->is_valid_calculator_data($values['calculator_data'])) {
+        if ($this->cart_item_has_valid_calculator_data($values)) {
             $cart_item['calculator_data'] = $values['calculator_data'];
             $product = wc_get_product($cart_item['variation_id'] ?: $cart_item['product_id']);
 
@@ -412,7 +412,7 @@ readonly final class Egaline_Calculator_Cart
 
     private function cart_item_has_valid_calculator_data(array $cart_item): bool
     {
-        return isset($cart_item['calculator_data']) && $this->is_valid_calculator_data($cart_item['calculator_data']);
+        return isset($cart_item['calculator_data']) && is_array($cart_item['calculator_data']) && $this->is_valid_calculator_data($cart_item['calculator_data']);
     }
 
     private function is_valid_calculator_data(array $data): bool
