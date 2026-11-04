@@ -57,6 +57,7 @@ foreach ( $nested_invalid as $label => $data ) {
     $cart_item = array(
         'product_id' => 123,
         'quantity' => 1,
+        'data' => new WC_Product_Simple(),
         'calculator_data' => $data,
     );
     $expected = array( 'item' => $cart_item );
