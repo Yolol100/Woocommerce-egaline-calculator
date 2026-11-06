@@ -38,3 +38,13 @@ for plugin_key, readme_key in pairs.items():
             f"readme {readme_key}={expected!r}"
         )
     print(f"PASS {plugin_key}: {actual}")
+
+readme_text = (ROOT / "readme.txt").read_text(encoding="utf-8")
+changelog = readme_text.split("== Changelog ==", 1)[-1]
+versions = re.findall(r"^= (\d+\.\d+\.\d+) =$", changelog, re.M)
+if not versions or versions[0] != plugin_field("Version"):
+    raise SystemExit("Latest release must be the first changelog entry")
+if len(versions) != len(set(versions)):
+    raise SystemExit("Changelog contains a duplicate release heading")
+if versions != sorted(versions, key=lambda version: tuple(map(int, version.split("."))), reverse=True):
+    raise SystemExit("Changelog versions must be newest first")

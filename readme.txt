@@ -26,6 +26,11 @@ WooCommerce Egaline Calculator adds product-specific calculator fields for thick
 
 == Changelog ==
 
+= 1.0.9 =
+* Improved native WordPress admin sidebar overview styling and filtering.
+* Compatibility verified on WordPress 7.1 with WooCommerce 11.1.0 and on the previous WordPress 6.8 / WooCommerce 10.7.0 baseline.
+
+
 = 1.0.4 =
 * Added a native WordPress admin sidebar page showing products where the Egaline Calculator is enabled.
 * Updated the admin toolbar link to open the enabled-products overview.
@@ -37,8 +42,3 @@ WooCommerce Egaline Calculator adds product-specific calculator fields for thick
 
 = 1.0.0 =
 Initial release.
-
-
-= 1.0.9 =
-* Improved native WordPress admin sidebar overview styling and filtering.
-* Compatibility verified on WordPress 7.1 with WooCommerce 11.1.0 and on the previous WordPress 6.8 / WooCommerce 10.7.0 baseline.

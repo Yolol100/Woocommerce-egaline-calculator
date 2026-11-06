@@ -108,6 +108,11 @@ jobs:
           set -euo pipefail
           php /tmp/wp-cli.phar eval 'if (false === has_action("before_woocommerce_init")) { fwrite(STDERR, "WooCommerce compatibility hook missing\n"); exit(1); } echo "woocommerce-hook-ok\n";' --path=/tmp/egaline-runtime
 
+      - name: Verify malformed cart and session payload handling
+        shell: bash
+        run: |
+          php /tmp/wp-cli.phar eval-file /tmp/egaline-runtime/wp-content/plugins/woocommerce-egaline-calculator/tests/cart-data-validation.php --path=/tmp/egaline-runtime
+
       - name: Reject runtime PHP errors
         if: always()
         shell: bash
